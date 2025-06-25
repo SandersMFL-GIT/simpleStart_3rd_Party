@@ -21,7 +21,8 @@ public class isoftpulAPIIntegration {
                     SELECT Id, Name, Phone, Quoted_Retainer__c,
                            Responsible_Attorney__c, Responsible_Attorney_Email_A__c,
                            FirstName, LastName, PersonMailingStreet, PersonMailingCity,
-                           State_A__c, PersonMailingPostalCode
+                           State_A__c, PersonMailingPostalCode,
+                           Birthdate__c
                       FROM Account
                      WHERE Id IN :accountIds
                 ];
@@ -31,7 +32,8 @@ public class isoftpulAPIIntegration {
                            Responsible_Attorney__c, Responsible_Attorney_Email_A__c,
                            Third_Party__r.FirstName, Third_Party__r.LastName,
                            Third_Party__r.PersonMailingStreet, Third_Party__r.PersonMailingCity,
-                           Third_Party__r.State_A__c, Third_Party__r.PersonMailingPostalCode
+                           Third_Party__r.State_A__c, Third_Party__r.PersonMailingPostalCode,
+                           Third_Party__r.Birthdate__c
                       FROM Account
                      WHERE Id IN :accountIds
                 ];
@@ -52,7 +54,7 @@ public class isoftpulAPIIntegration {
                 req.setHeader('Content-Type', 'application/x-www-form-urlencoded');
 
                 // Determine field values
-                String firstName = '', lastName = '', address = '', city = '', state = '', zip = '';
+                String firstName = '', lastName = '', address = '', city = '', state = '', zip = '', birthdate = '';
                 if (!isThirdParty) {
                     firstName = a.FirstName != null ? a.FirstName : '';
                     lastName  = a.LastName  != null ? a.LastName  : '';
@@ -60,6 +62,7 @@ public class isoftpulAPIIntegration {
                     city      = a.PersonMailingCity   != null ? a.PersonMailingCity   : '';
                     state     = a.State_A__c          != null ? a.State_A__c          : '';
                     zip       = a.PersonMailingPostalCode != null ? a.PersonMailingPostalCode : '';
+                    birthdate = (a.Birthdate__c != null) ? String.valueOf(a.Birthdate__c) : '';
                 } else {
                     firstName = (a.Third_Party__r != null && a.Third_Party__r.FirstName != null)
                         ? a.Third_Party__r.FirstName : '';
@@ -73,8 +76,10 @@ public class isoftpulAPIIntegration {
                         ? a.Third_Party__r.State_A__c          : '';
                     zip       = (a.Third_Party__r != null && a.Third_Party__r.PersonMailingPostalCode != null)
                         ? a.Third_Party__r.PersonMailingPostalCode : '';
+                    birthdate = (a.Third_Party__r != null && a.Third_Party__r.Birthdate__c != null)
+                        ? String.valueOf(a.Third_Party__r.Birthdate__c) : '';
                 }
-                System.debug(LoggingLevel.DEBUG, 'Extracted fields - firstName: ' + firstName + ', lastName: ' + lastName + ', address: ' + address + ', city: ' + city + ', state: ' + state + ', zip: ' + zip);
+                System.debug(LoggingLevel.DEBUG, 'Extracted fields - firstName: ' + firstName + ', lastName: ' + lastName + ', address: ' + address + ', city: ' + city + ', state: ' + state + ', zip: ' + zip + ', birthdate: ' + birthdate);
 
                 // Construct the POST body
                 String body = 'first_name=' + EncodingUtil.urlEncode(firstName, 'UTF-8') +
@@ -82,7 +87,8 @@ public class isoftpulAPIIntegration {
                               '&address='    + EncodingUtil.urlEncode(address, 'UTF-8') +
                               '&city='       + EncodingUtil.urlEncode(city, 'UTF-8') +
                               '&state='      + EncodingUtil.urlEncode(state, 'UTF-8') +
-                              '&zip='        + EncodingUtil.urlEncode(zip, 'UTF-8');
+                              '&zip='        + EncodingUtil.urlEncode(zip, 'UTF-8') +
+                              '&date_of_birth='  + EncodingUtil.urlEncode(birthdate, 'UTF-8');
                 req.setBody(body);
 
                 System.debug(LoggingLevel.INFO, 'Sending request for Account Id: ' + a.Id);
