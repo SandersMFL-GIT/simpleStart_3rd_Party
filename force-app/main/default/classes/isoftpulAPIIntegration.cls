@@ -161,20 +161,20 @@ public class isoftpulAPIIntegration {
                             String failureMessages = '';
                             String failureTypes    = '';
 
-                            if (responseWrapper.reports.equifax    != null && responseWrapper.reports.equifax.status    == 'failure') {
-                                failureStatuses += 'Equifax: '   + responseWrapper.reports.equifax.status    + '\n';
-                                failureMessages += 'Equifax: '   + responseWrapper.reports.equifax.message   + '\n';
-                                failureTypes    += 'Equifax: '   + responseWrapper.reports.equifax.failure_type + '\n';
+                            if (responseWrapper.reports.equifax != null && responseWrapper.reports.equifax.status == 'failure') {
+                                failureStatuses += 'Equifax: ' + responseWrapper.reports.equifax.status + '\n';
+                                failureMessages += 'Equifax: ' + responseWrapper.reports.equifax.message + '\n';
+                                failureTypes    += 'Equifax: ' + responseWrapper.reports.equifax.failure_type + '\n';
                             }
                             if (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.status == 'failure') {
                                 failureStatuses += 'TransUnion: ' + responseWrapper.reports.transunion.status + '\n';
                                 failureMessages += 'TransUnion: ' + responseWrapper.reports.transunion.message + '\n';
                                 failureTypes    += 'TransUnion: ' + responseWrapper.reports.transunion.failure_type + '\n';
                             }
-                            if (responseWrapper.reports.experian  != null && responseWrapper.reports.experian.status  == 'failure') {
-                                failureStatuses += 'Experian: '   + responseWrapper.reports.experian.status  + '\n';
-                                failureMessages += 'Experian: '   + responseWrapper.reports.experian.message + '\n';
-                                failureTypes    += 'Experian: '   + responseWrapper.reports.experian.failure_type + '\n';
+                            if (responseWrapper.reports.experian != null && responseWrapper.reports.experian.status == 'failure') {
+                                failureStatuses += 'Experian: ' + responseWrapper.reports.experian.status + '\n';
+                                failureMessages += 'Experian: ' + responseWrapper.reports.experian.message + '\n';
+                                failureTypes    += 'Experian: ' + responseWrapper.reports.experian.failure_type + '\n';
                             }
 
                             accountUpd.Credit_Status__c       = failureStatuses;
@@ -186,6 +186,12 @@ public class isoftpulAPIIntegration {
                             if (a.Responsible_Attorney_Email_A__c != null) {
                                 System.debug(LoggingLevel.INFO, 'Sending email notification to: ' + a.Responsible_Attorney_Email_A__c);
                                 sendEmailNotification(a, Intelligence);
+
+                                // Additionally send a freeze-specific email if any failure type indicates a freeze
+                                if (failureTypes != null && failureTypes.contains('freeze')) {
+                                    System.debug(LoggingLevel.INFO, 'Sending freeze alert email notification to: ' + a.Responsible_Attorney_Email_A__c);
+                                    sendFreezeEmailNotification(a);
+                                }
                             }
                         }    
 
@@ -248,6 +254,30 @@ public class isoftpulAPIIntegration {
             System.debug(LoggingLevel.DEBUG, 'Email body: ' + emailBody);
             Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
             System.debug(LoggingLevel.INFO, '==> Email sent to ' + a.Responsible_Attorney_Email_A__c);
+        }
+
+        /**
+         * Helper method to send freeze alert email notifications.
+         */
+        private void sendFreezeEmailNotification(Account a) {
+            System.debug(LoggingLevel.INFO, '==> Entered sendFreezeEmailNotification() for Account Id: ' + a.Id);
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            mail.setToAddresses(new String[] { a.Responsible_Attorney_Email_A__c });
+            String subject = 'Urgent: Action Required on Credit Report';
+            mail.setSenderDisplayName('Salesforce Support');
+            mail.setSubject(subject);
+
+            String emailBody = '<p>Hello,</p>' +
+                               '<p>Please be advised that there is a freeze alert on the credit report for ' + a.Name + '.</p>' +
+                               '<p>Immediate action may be required to address this issue.</p>' +
+                               '<p>Account URL:</p>' +
+                               '<p><a href="https://modernfamilylaw.lightning.force.com/lightning/r/Account/' +
+                               a.Id + '/view">View Account in Salesforce</a></p>';
+
+            mail.setHtmlBody(emailBody);
+            System.debug(LoggingLevel.DEBUG, 'Freeze alert email body: ' + emailBody);
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            System.debug(LoggingLevel.INFO, '==> Freeze alert email sent to ' + a.Responsible_Attorney_Email_A__c);
         }
     }
 
