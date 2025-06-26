@@ -125,10 +125,10 @@ public class isoftpulAPIIntegration {
                         } else if (resultNormalized == 'no offers matched') {
                             Boolean freezeFound = false;
                             if (responseWrapper.reports != null) {
+                                // Remove Equifax and Experian references; keep TransUnion only.
                                 freezeFound = (
-                                    (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.failure_type == 'freeze') ||
-                                    (responseWrapper.reports.equifax   != null && responseWrapper.reports.equifax.failure_type   == 'freeze') ||
-                                    (responseWrapper.reports.experian  != null && responseWrapper.reports.experian.failure_type  == 'freeze')
+                                    responseWrapper.reports.transunion != null &&
+                                    responseWrapper.reports.transunion.failure_type == 'freeze'
                                 );
                             }
                             if (freezeFound) {
@@ -163,24 +163,15 @@ public class isoftpulAPIIntegration {
 
                         // Process any report failures
                         if (responseWrapper.reports != null) {
+                            // Remove Equifax and Experian
                             String failureStatuses = '';
                             String failureMessages = '';
                             String failureTypes    = '';
 
-                            if (responseWrapper.reports.equifax != null && responseWrapper.reports.equifax.status == 'failure') {
-                                failureStatuses += 'Equifax: ' + responseWrapper.reports.equifax.status + '\n';
-                                failureMessages += 'Equifax: ' + responseWrapper.reports.equifax.message + '\n';
-                                failureTypes    += 'Equifax: ' + responseWrapper.reports.equifax.failure_type + '\n';
-                            }
                             if (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.status == 'failure') {
                                 failureStatuses += 'TransUnion: ' + responseWrapper.reports.transunion.status + '\n';
                                 failureMessages += 'TransUnion: ' + responseWrapper.reports.transunion.message + '\n';
                                 failureTypes    += 'TransUnion: ' + responseWrapper.reports.transunion.failure_type + '\n';
-                            }
-                            if (responseWrapper.reports.experian != null && responseWrapper.reports.experian.status == 'failure') {
-                                failureStatuses += 'Experian: ' + responseWrapper.reports.experian.status + '\n';
-                                failureMessages += 'Experian: ' + responseWrapper.reports.experian.message + '\n';
-                                failureTypes    += 'Experian: ' + responseWrapper.reports.experian.failure_type + '\n';
                             }
 
                             accountUpd.Credit_Status__c       = failureStatuses;
@@ -274,7 +265,7 @@ public class isoftpulAPIIntegration {
             mail.setSubject(subject);
 
             String emailBody = '<p>Hello,</p>' +
-                               '<p>Please be advised that there is a freeze alert on the credit report for ' + a.Name + '.</p>' +
+                               '<p>Please be advised that there is a freeze alert on the credit report for <b>' + a.Name + '</b>.</p>' +
                                '<p>Immediate action may be required to address this issue.</p>' +
                                '<p>Account URL:</p>' +
                                '<p><a href="https://modernfamilylaw.lightning.force.com/lightning/r/Account/' +
