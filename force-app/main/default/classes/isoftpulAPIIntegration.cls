@@ -114,12 +114,12 @@ public class isoftpulAPIIntegration {
                         String resultNormalized = (resultRaw != null) ? resultRaw.toLowerCase() : '';
                         System.debug(LoggingLevel.DEBUG, 'Parsed resultRaw: ' + resultRaw + ', normalized: ' + resultNormalized);
 
-                        String Intelligence;
+                        String intelligenceResult;
                         Decimal multiplier = null;
 
                         // Logic for setting retainer, credit check, etc.
                         if (resultNormalized == 'failed') {
-                            Intelligence                            = 'Failed';
+                            intelligenceResult                     = 'Failed';
                             accountUpd.Credit_Check_Complete__c     = false;
                             accountUpd.Send_Credit_Request__c       = false;
                         } else if (resultNormalized == 'no offers matched') {
@@ -132,34 +132,34 @@ public class isoftpulAPIIntegration {
                                 );
                             }
                             if (freezeFound) {
-                                Intelligence                        = 'Failed';
+                                intelligenceResult                  = 'Failed';
                                 accountUpd.Credit_Check_Complete__c = false;
                                 accountUpd.Send_Credit_Request__c   = false;
                             } else {
-                                Intelligence                        = 'Full Retainer';
+                                intelligenceResult                  = 'Full Retainer';
                                 multiplier                          = 1;
                                 accountUpd.Credit_Check_Complete__c = true;
                                 accountUpd.Send_Credit_Request__c   = true;
                             }
                         } else if (resultNormalized == 'gold') {
-                            Intelligence = 'Gold - 0% Retainer'; multiplier   = 0;
+                            intelligenceResult = 'Gold - 0% Retainer'; multiplier   = 0;
                         } else if (resultNormalized == 'silver') {
-                            Intelligence = 'Silver - 50% Retainer'; multiplier = 0.5;
+                            intelligenceResult = 'Silver - 50% Retainer'; multiplier = 0.5;
                         } else if (resultNormalized == 'bronze') {
-                            Intelligence = 'Bronze - 80% Retainer'; multiplier = 0.8;
+                            intelligenceResult = 'Bronze - 80% Retainer'; multiplier = 0.8;
                         } else if (resultNormalized == 'full retainer') {
-                            Intelligence = 'Full Retainer'; multiplier = 1;
+                            intelligenceResult = 'Full Retainer'; multiplier = 1;
                         } else {
-                            Intelligence                            = 'Unknown';
+                            intelligenceResult                     = 'Unknown';
                             accountUpd.Credit_Check_Complete__c     = false;
                             accountUpd.Send_Credit_Request__c       = false;
                         }
-                        System.debug(LoggingLevel.DEBUG, 'Mapped Intelligence: ' + Intelligence + ', multiplier: ' + multiplier);
+                        System.debug(LoggingLevel.DEBUG, 'Mapped Intelligence: ' + intelligenceResult + ', multiplier: ' + multiplier);
 
-                        if (Intelligence != 'Failed') {
+                        if (intelligenceResult != 'Failed') {
                             accountUpd.Credit_Check_Complete__c = true;
                         }
-                        accountUpd.Credit_Decision__c = Intelligence;
+                        accountUpd.Credit_Decision__c = intelligenceResult;
 
                         // Process any report failures
                         if (responseWrapper.reports != null) {
@@ -191,7 +191,7 @@ public class isoftpulAPIIntegration {
                             // Send email notification if attorney email is present
                             if (a.Responsible_Attorney_Email_A__c != null) {
                                 System.debug(LoggingLevel.INFO, 'Sending email notification to: ' + a.Responsible_Attorney_Email_A__c);
-                                sendEmailNotification(a, Intelligence);
+                                sendEmailNotification(a, intelligenceResult);
 
                                 // Additionally send a freeze-specific email if any failure type indicates a freeze
                                 if (failureTypes != null && failureTypes.contains('freeze')) {
