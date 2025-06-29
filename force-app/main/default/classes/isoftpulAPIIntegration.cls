@@ -114,52 +114,51 @@ public class isoftpulAPIIntegration {
                         String resultNormalized = (resultRaw != null) ? resultRaw.toLowerCase() : '';
                         System.debug(LoggingLevel.DEBUG, 'Parsed resultRaw: ' + resultRaw + ', normalized: ' + resultNormalized);
 
-                        String Intelligence;
+                        String intelligence;
                         Decimal multiplier = null;
 
                         // Logic for setting retainer, credit check, etc.
                         if (resultNormalized == 'failed') {
-                            Intelligence                            = 'Failed';
+                            intelligence  = 'Failed';
                             accountUpd.Credit_Check_Complete__c     = false;
                             accountUpd.Send_Credit_Request__c       = false;
                         } else if (resultNormalized == 'no offers matched') {
                             Boolean freezeFound = false;
                             if (responseWrapper.reports != null) {
                                 freezeFound = (
-                                    (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.failure_type == 'freeze') ||
-                                    (responseWrapper.reports.equifax   != null && responseWrapper.reports.equifax.failure_type   == 'freeze') ||
-                                    (responseWrapper.reports.experian  != null && responseWrapper.reports.experian.failure_type  == 'freeze')
+                                    (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.failure_type == 'freeze') 
                                 );
                             }
                             if (freezeFound) {
-                                Intelligence                        = 'Failed';
+                                intelligence= 'Failed';
                                 accountUpd.Credit_Check_Complete__c = false;
                                 accountUpd.Send_Credit_Request__c   = false;
+                                accountUpd.Send_Credit_Request__c = false;
                             } else {
-                                Intelligence                        = 'Full Retainer';
+                                intelligence= 'Full Retainer';
                                 multiplier                          = 1;
                                 accountUpd.Credit_Check_Complete__c = true;
                                 accountUpd.Send_Credit_Request__c   = true;
                             }
-                        } else if (resultNormalized == 'gold') {
-                            Intelligence = 'Gold - 0% Retainer'; multiplier   = 0;
-                        } else if (resultNormalized == 'silver') {
-                            Intelligence = 'Silver - 50% Retainer'; multiplier = 0.5;
-                        } else if (resultNormalized == 'bronze') {
-                            Intelligence = 'Bronze - 80% Retainer'; multiplier = 0.8;
-                        } else if (resultNormalized == 'full retainer') {
-                            Intelligence = 'Full Retainer'; multiplier = 1;
+                        } else if (resultNormalized == 'passed') {
+                            intelligence = 'Gold - 0% Retainer'; multiplier   = 0;
+                        } else if (resultNormalized == 'passed') {
+                            intelligence = 'Silver - 50% Retainer'; multiplier = 0.5;
+                        } else if (resultNormalized == 'passed') {
+                            intelligence = 'Bronze - 80% Retainer'; multiplier = 0.8;
+                        } else if (resultNormalized == 'passed') {
+                            intelligence = 'Full Retainer'; multiplier = 1;
                         } else {
-                            Intelligence                            = 'Unknown';
+                            intelligence= 'Unknown';
                             accountUpd.Credit_Check_Complete__c     = false;
                             accountUpd.Send_Credit_Request__c       = false;
                         }
-                        System.debug(LoggingLevel.DEBUG, 'Mapped Intelligence: ' + Intelligence + ', multiplier: ' + multiplier);
+                        System.debug(LoggingLevel.DEBUG, 'Mapped Intelligence: ' + intelligence + ', multiplier: ' + multiplier);
 
-                        if (Intelligence != 'Failed') {
+                        if (intelligence != 'Failed') {
                             accountUpd.Credit_Check_Complete__c = true;
                         }
-                        accountUpd.Credit_Decision__c = Intelligence;
+                        accountUpd.Credit_Decision__c = intelligence;
 
                         // Process any report failures
                         if (responseWrapper.reports != null) {
@@ -167,38 +166,19 @@ public class isoftpulAPIIntegration {
                             String failureMessages = '';
                             String failureTypes    = '';
 
-                            if (responseWrapper.reports.equifax != null && responseWrapper.reports.equifax.status == 'failure') {
-                                failureStatuses += 'Equifax: ' + responseWrapper.reports.equifax.status + '\n';
-                                failureMessages += 'Equifax: ' + responseWrapper.reports.equifax.message + '\n';
-                                failureTypes    += 'Equifax: ' + responseWrapper.reports.equifax.failure_type + '\n';
-                            }
+                            
                             if (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.status == 'failure') {
                                 failureStatuses += 'TransUnion: ' + responseWrapper.reports.transunion.status + '\n';
                                 failureMessages += 'TransUnion: ' + responseWrapper.reports.transunion.message + '\n';
                                 failureTypes    += 'TransUnion: ' + responseWrapper.reports.transunion.failure_type + '\n';
                             }
-                            if (responseWrapper.reports.experian != null && responseWrapper.reports.experian.status == 'failure') {
-                                failureStatuses += 'Experian: ' + responseWrapper.reports.experian.status + '\n';
-                                failureMessages += 'Experian: ' + responseWrapper.reports.experian.message + '\n';
-                                failureTypes    += 'Experian: ' + responseWrapper.reports.experian.failure_type + '\n';
-                            }
+                            
 
                             accountUpd.Credit_Status__c       = failureStatuses;
                             accountUpd.Credit_Message__c      = failureMessages;
                             accountUpd.Credit_Failure_Type__c = failureTypes;
                             System.debug(LoggingLevel.DEBUG, 'Aggregated failureStatuses: ' + failureStatuses);
 
-                            // Send email notification if attorney email is present
-                            if (a.Responsible_Attorney_Email_A__c != null) {
-                                System.debug(LoggingLevel.INFO, 'Sending email notification to: ' + a.Responsible_Attorney_Email_A__c);
-                                sendEmailNotification(a, Intelligence);
-
-                                // Additionally send a freeze-specific email if any failure type indicates a freeze
-                                if (failureTypes != null && failureTypes.contains('freeze')) {
-                                    System.debug(LoggingLevel.INFO, 'Sending freeze alert email notification to: ' + a.Responsible_Attorney_Email_A__c);
-                                    sendFreezeEmailNotification(a);
-                                }
-                            }
                         }    
 
                         accountUpd.Credit_Report_Link__c     = (responseWrapper.reports != null) ? responseWrapper.reports.link : null;
@@ -237,54 +217,6 @@ public class isoftpulAPIIntegration {
             System.debug(LoggingLevel.INFO, '==> APIIntegrationJob.execute() complete.');
         }
 
-        /**
-         * Helper method to send email notifications.
-         */
-        private void sendEmailNotification(Account a, String intelligence) {
-            System.debug(LoggingLevel.INFO, '==> Entered sendEmailNotification() for Account Id: ' + a.Id);
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(new String[] { a.Responsible_Attorney_Email_A__c });
-            String subject = isThirdParty ? 'An email from Salesforce' : 'Client Approved PC Now';
-            mail.setSenderDisplayName('Salesforce Support');
-            mail.setSubject(subject);
-
-            String emailBody = '<p>Hello,</p>' +
-                               '<p>A new credit check for ' + a.Name + ' is available for review.</p>' +
-                               '<p>Rating Received: <b>' + intelligence + '</b></p>' +
-                               '<p>Mobile#: <b>' + a.Phone + '</b></p>' +
-                               '<p>Account URL:</p>' +
-                               '<p><a href="https://modernfamilylaw.lightning.force.com/lightning/r/Account/' +
-                               a.Id + '/view">View Account in Salesforce</a></p>';
-
-            mail.setHtmlBody(emailBody);
-            System.debug(LoggingLevel.DEBUG, 'Email body: ' + emailBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
-            System.debug(LoggingLevel.INFO, '==> Email sent to ' + a.Responsible_Attorney_Email_A__c);
-        }
-
-        /**
-         * Helper method to send freeze alert email notifications.
-         */
-        private void sendFreezeEmailNotification(Account a) {
-            System.debug(LoggingLevel.INFO, '==> Entered sendFreezeEmailNotification() for Account Id: ' + a.Id);
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(new String[] { a.Responsible_Attorney_Email_A__c });
-            String subject = 'Urgent: Action Required on Credit Report';
-            mail.setSenderDisplayName('Salesforce Support');
-            mail.setSubject(subject);
-
-            String emailBody = '<p>Hello,</p>' +
-                               '<p>Please be advised that there is a freeze alert on the credit report for ' + a.Name + '.</p>' +
-                               '<p>Immediate action may be required to address this issue.</p>' +
-                               '<p>Account URL:</p>' +
-                               '<p><a href="https://modernfamilylaw.lightning.force.com/lightning/r/Account/' +
-                               a.Id + '/view">View Account in Salesforce</a></p>';
-
-            mail.setHtmlBody(emailBody);
-            System.debug(LoggingLevel.DEBUG, 'Freeze alert email body: ' + emailBody);
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
-            System.debug(LoggingLevel.INFO, '==> Freeze alert email sent to ' + a.Responsible_Attorney_Email_A__c);
-        }
     }
 
     // Public methods to enqueue the Queueable jobs
@@ -323,9 +255,7 @@ public class isoftpulAPIIntegration {
     }
     public class Reports {
         public String link       { get; set; }
-        public ReportStatus equifax    { get; set; }
         public ReportStatus transunion { get; set; }
-        public ReportStatus experian   { get; set; }
     }
     public class ReportStatus {
         public String status       { get; set; }
