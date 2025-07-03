@@ -9,6 +9,13 @@ public class isoftpulAPIIntegration {
             this.isThirdParty = isThirdParty;
             System.debug(LoggingLevel.INFO, '==> APIIntegrationJob constructed with IDs: ' + accountIds + ' | isThirdParty: ' + isThirdParty);
         }
+        
+       /*–– inside APIIntegrationJob ––*/
+private String formatDateMMDDYYYY(Date d) {
+    if (d == null) return '';
+    DateTime dt = DateTime.newInstance(d.year(), d.month(), d.day());
+    return dt.format('MM/dd/yyyy');
+}
 
         public void execute(QueueableContext context) {
             System.debug(LoggingLevel.INFO, '==> Starting APIIntegrationJob.execute()...');
@@ -62,7 +69,7 @@ public class isoftpulAPIIntegration {
                     city      = a.PersonMailingCity   != null ? a.PersonMailingCity   : '';
                     state     = a.State_A__c          != null ? a.State_A__c          : '';
                     zip       = a.PersonMailingPostalCode != null ? a.PersonMailingPostalCode : '';
-                    birthdate = (a.Birthdate__c != null) ? String.valueOf(a.Birthdate__c) : '';
+                    birthdate = formatDateMMDDYYYY(a.Birthdate__c);     
                 } else {
                     firstName = (a.Third_Party__r != null && a.Third_Party__r.FirstName != null)
                         ? a.Third_Party__r.FirstName : '';
@@ -76,8 +83,8 @@ public class isoftpulAPIIntegration {
                         ? a.Third_Party__r.State_A__c          : '';
                     zip       = (a.Third_Party__r != null && a.Third_Party__r.PersonMailingPostalCode != null)
                         ? a.Third_Party__r.PersonMailingPostalCode : '';
-                    birthdate = (a.Third_Party__r != null && a.Third_Party__r.Birthdate__c != null)
-                        ? String.valueOf(a.Third_Party__r.Birthdate__c) : '';
+                                       birthdate = formatDateMMDDYYYY(a.Third_Party__r.Birthdate__c); 
+
                 }
                 System.debug(LoggingLevel.DEBUG, 'Extracted fields - firstName: ' + firstName + ', lastName: ' + lastName + ', address: ' + address + ', city: ' + city + ', state: ' + state + ', zip: ' + zip + ', birthdate: ' + birthdate);
 
@@ -108,52 +115,82 @@ public class isoftpulAPIIntegration {
                         System.debug(LoggingLevel.DEBUG, 'Deserialized response wrapper: ' + JSON.serializePretty(responseWrapper));
 
                         Account accountUpd = new Account(Id = a.Id);
+                        
+                        //result from the JSON
+                        
+                        String resultRaw        = (responseWrapper.intelligence != null)
+                        ? responseWrapper.intelligence.result
+                        : null;
+String resultNormalized = (resultRaw != null) ? resultRaw.toLowerCase() : '';
 
-                        // Normalize the intelligence result for comparison
-                        String resultRaw        = (responseWrapper.intelligence != null) ? responseWrapper.intelligence.result : null;
-                        String resultNormalized = (resultRaw != null) ? resultRaw.toLowerCase() : '';
-                        System.debug(LoggingLevel.DEBUG, 'Parsed resultRaw: ' + resultRaw + ', normalized: ' + resultNormalized);
 
-                        String intelligence;
-                        Decimal multiplier = null;
+                  /*───────────────── Retainer-tier mapping ─────────────────
+  The API uses:
+      - intelligence.result  = "passed" / "failed" / "no offers matched"
+      - intelligence.name    = actual tier ("Gold - 0% Retainer", etc.)
+  ------------------------------------------------------------------*/
+String tierRaw  = (responseWrapper.intelligence != null)
+                ? responseWrapper.intelligence.name
+                : null;
+String tier     = (tierRaw != null) ? tierRaw.toLowerCase() : '';
 
-                        // Logic for setting retainer, credit check, etc.
-                        if (resultNormalized == 'failed') {
-                            intelligence  = 'Failed';
-                            accountUpd.Credit_Check_Complete__c     = false;
-                            accountUpd.Send_Credit_Request__c       = false;
-                        } else if (resultNormalized == 'no offers matched') {
-                            Boolean freezeFound = false;
-                            if (responseWrapper.reports != null) {
-                                freezeFound = (
-                                    (responseWrapper.reports.transunion != null && responseWrapper.reports.transunion.failure_type == 'freeze') 
-                                );
-                            }
-                            if (freezeFound) {
-                                intelligence= 'Failed';
-                                accountUpd.Credit_Check_Complete__c = false;
-                                accountUpd.Send_Credit_Request__c   = false;
-                                accountUpd.Send_Credit_Request__c = false;
-                            } else {
-                                intelligence= 'Full Retainer';
-                                multiplier                          = 1;
-                                accountUpd.Credit_Check_Complete__c = true;
-                                accountUpd.Send_Credit_Request__c   = true;
-                            }
-                        } else if (resultNormalized == 'passed') {
-                            intelligence = 'Gold - 0% Retainer'; multiplier   = 0;
-                        } else if (resultNormalized == 'passed') {
-                            intelligence = 'Silver - 50% Retainer'; multiplier = 0.5;
-                        } else if (resultNormalized == 'passed') {
-                            intelligence = 'Bronze - 80% Retainer'; multiplier = 0.8;
-                        } else if (resultNormalized == 'passed') {
-                            intelligence = 'Full Retainer'; multiplier = 1;
-                        } else {
-                            intelligence= 'Unknown';
-                            accountUpd.Credit_Check_Complete__c     = false;
-                            accountUpd.Send_Credit_Request__c       = false;
-                        }
-                        System.debug(LoggingLevel.DEBUG, 'Mapped Intelligence: ' + intelligence + ', multiplier: ' + multiplier);
+String intelligence;          // what we’ll save on the Account
+Decimal multiplier = null;    // 0, 0.5, 0.8, 1
+
+/*──── 1) Hard-fail cases ────*/
+if (resultNormalized == 'failed') {
+    intelligence                        = 'Failed';
+    accountUpd.Credit_Check_Complete__c = false;
+    accountUpd.Send_Credit_Request__c   = false;
+
+/*──── 2) “No offers matched” (possible credit freeze) ────*/
+} else if (resultNormalized == 'no offers matched') {
+    Boolean creditFrozen = (
+        responseWrapper.reports        != null &&
+        responseWrapper.reports.transunion != null &&
+        responseWrapper.reports.transunion.failure_type == 'freeze'
+    );
+
+    if (creditFrozen) {
+        intelligence                        = 'Failed';
+        accountUpd.Credit_Check_Complete__c = false;
+        accountUpd.Send_Credit_Request__c   = false;
+    } else {
+        intelligence                        = 'Full Retainer';
+        multiplier                          = 1;
+        accountUpd.Credit_Check_Complete__c = true;
+        accountUpd.Send_Credit_Request__c   = true;
+    }
+
+/*──── 3) Passed – determine tier from intelligence.name ────*/
+} else if (resultNormalized == 'passed') {
+
+    if (tier.contains('gold')) {
+        intelligence = 'Gold - 0% Retainer';   multiplier = 0;
+    } else if (tier.contains('silver')) {
+        intelligence = 'Silver - 50% Retainer'; multiplier = 0.5;
+    } else if (tier.contains('bronze')) {
+        intelligence = 'Bronze - 80% Retainer'; multiplier = 0.8;
+    } else if (tier.contains('full')) {
+        intelligence = 'Full Retainer';         multiplier = 1;
+    } else {
+        intelligence = tierRaw != null ? tierRaw : 'Unknown';
+    }
+
+    accountUpd.Credit_Check_Complete__c = true;
+    // Business rule: send request for anything requiring money up-front
+    accountUpd.Send_Credit_Request__c   = (multiplier != null && multiplier > 0);
+
+/*──── 4) Catch-all ────*/
+} else {
+    intelligence                        = 'Unknown';
+    accountUpd.Credit_Check_Complete__c = false;
+    accountUpd.Send_Credit_Request__c   = false;
+}
+
+System.debug(LoggingLevel.DEBUG,
+    'Mapped Intelligence: ' + intelligence + ', multiplier: ' + multiplier);
+
 
                         if (intelligence != 'Failed') {
                             accountUpd.Credit_Check_Complete__c = true;
