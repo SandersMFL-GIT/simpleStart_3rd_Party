@@ -66,7 +66,7 @@ public inherited sharing class AccountTriggerHandler {
         }
     }*/
     
-    public static void createReportisoftpull(List<Account> newAccounts, Map<Id, Account> oldMapAccounts) {
+   /* public static void createReportisoftpull(List<Account> newAccounts, Map<Id, Account> oldMapAccounts) {
     // Separate lists to track Client and Third-Party account IDs
     List<Id> accIds = new List<Id>();
     List<Id> accThirdPartyIds = new List<Id>();
@@ -98,7 +98,7 @@ public inherited sharing class AccountTriggerHandler {
         System.debug('Triggering createReportForThirdParty for Third-Party accounts: ' + accThirdPartyIds);
         isoftpulAPIIntegration.createReportForThirdParty(accThirdPartyIds);
     }
-}
+}*/
 
     
 }
