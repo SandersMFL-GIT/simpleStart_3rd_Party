@@ -1,0 +1,12 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    background: white;
+}
+
+lightning-card {
+    width: 600px;
+    max-width: 100%;
+}

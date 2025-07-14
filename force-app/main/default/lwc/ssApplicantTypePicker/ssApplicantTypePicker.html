@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-grid slds-grid_align-center slds-p-around_medium" style="background-color: #f3f4f6;">
+        <div class="slds-size_1-of-1 slds-medium-size_2-of-3 slds-large-size_1-of-2">
+            <lightning-card icon-name="standard:user" variant="base">
+                <h2 slot="title" class="slds-card__header-title">
+                    SimpleStart Application
+                </h2>
+                
+                <div class="slds-p-horizontal_medium slds-p-bottom_medium">
+                    <p class="slds-text-heading_small slds-m-bottom_small">
+                        Get Pre-Qualified Instantly!
+                    </p>
+                    <p class="slds-m-bottom_large">
+                        Take the first step toward a reduced retainer without affecting your credit score.
+                    </p>
+
+                    <lightning-combobox
+                        label="Is the applicant the Client, or a Third Party?"
+                        value={applicantType}
+                        options={options}
+                        onchange={handleChange}
+                        placeholder="-- Select an Applicant Type --"
+                        required>
+                    </lightning-combobox>
+
+                    <template if:true={errorMessage}>
+                        <div class="slds-text-color_error slds-m-top_small">{errorMessage}</div>
+                    </template>
+
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>
