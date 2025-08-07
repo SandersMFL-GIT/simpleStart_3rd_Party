@@ -1,0 +1,15 @@
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata" fqn="adobeSignWebForm">
+    <apiVersion>60.0</apiVersion>
+    <isExposed>true</isExposed>
+    <targets>
+        <target>lightning__FlowScreen</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="agreementId" type="String" label="Adobe Sign Agreement Id" description="Id of the echosign_dev1__SIGN_Agreement__c record"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

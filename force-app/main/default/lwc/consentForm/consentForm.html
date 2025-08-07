@@ -1,0 +1,35 @@
+<template>
+    <lightning-card>
+        <div class="slds-p-around_medium">
+            <div class="slds-text-title_bold slds-m-bottom_xx-small">Consent and Confirmation</div>
+            <p class="slds-m-bottom_medium">
+                By checking both boxes and clicking “I AGREE”,,, you confirm you have read and agree to the Consent to Electronic Disclosures and the Terms above.
+            </p>
+            <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                <div class="slds-size_1-of-1 slds-m-bottom_xx-small">
+                    <lightning-input type="checkbox"
+                                     label="I certify that I have read and agreed to the Consent to Electronic Disclosures"
+                                     checked={consentChecked}
+                                     onchange={handleConsentChange}
+                                     required>
+                    </lightning-input>
+                </div>
+                <div class="slds-size_1-of-1">
+                    <lightning-input type="checkbox"
+                                     label="I AGREE to the Terms above"
+                                     checked={termsChecked}
+                                     onchange={handleTermsChange}
+                                     required>
+                    </lightning-input>
+                </div>
+            </div>
+            <div class="slds-align_absolute-center">
+                <lightning-button label="I AGREE"
+                                  variant="brand"
+                                  onclick={handleAgree}
+                                  disabled={buttonDisabled}>
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-card>
+</template>

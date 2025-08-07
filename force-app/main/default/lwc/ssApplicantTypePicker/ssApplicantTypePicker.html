@@ -14,19 +14,19 @@
                         Take the first step toward a reduced retainer without affecting your credit score.
                     </p>
 
-                    <lightning-combobox
-                        label="Is the applicant the Client, or a Third Party?"
-                        value={applicantType}
-                        options={options}
-                        onchange={handleChange}
-                        placeholder="-- Select an Applicant Type --"
-                        required>
-                    </lightning-combobox>
-
+                    <div class="slds-size_1-of-2">
+                        <lightning-combobox
+                            label="Is the applicant the Client, or a Third Party?"
+                            value={applicantType}
+                            options={options}
+                            onchange={handleChange}
+                            placeholder="-- Select an Applicant Type --"
+                            required>
+                        </lightning-combobox>
+                    </div>
                     <template if:true={errorMessage}>
                         <div class="slds-text-color_error slds-m-top_small">{errorMessage}</div>
                     </template>
-
                 </div>
             </lightning-card>
         </div>

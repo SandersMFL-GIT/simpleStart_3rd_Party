@@ -2,17 +2,15 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
     <isExposed>true</isExposed>
-
-    
     <targets>
         <target>lightning__FlowScreen</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__AppPage</target>
+        <target>lightning__HomePage</target>
     </targets>
-
-    
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
-            
-            <property name="recordTypeId" type="String" label="Record Type Id"/>
+            <property name="webFormUrl" type="String" label="Adobe Sign Web Form URL" description="Paste your Adobe Sign public web form URL here"/>
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

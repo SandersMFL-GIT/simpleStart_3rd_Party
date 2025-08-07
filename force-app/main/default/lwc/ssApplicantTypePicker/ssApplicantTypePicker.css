@@ -1,0 +1,4 @@
+:host {
+    --sds-c-input-label-font-size: 1.2rem; /* Increased font size */
+    --sds-c-input-label-font-weight: 700; /* Made the label bold */
+}
