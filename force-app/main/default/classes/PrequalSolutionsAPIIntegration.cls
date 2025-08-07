@@ -1,8 +1,8 @@
-public with sharing class PrequalSolutionsAPIIntegration {
+public without sharing class PrequalSolutionsAPIIntegration {
     /**
      * Usage:
-     *   PrequalSolutionsAPIIntegration.createReport(accountIds); // Uses Account fields
-     *   PrequalSolutionsAPIIntegration.createReportForThirdParty(accountIds); // Uses Third_Party__r fields
+     *   PrequalSolutionsAPIIntegration.createReport(accountIds); 
+     *   PrequalSolutionsAPIIntegration.createReportForThirdParty(accountIds); 
      */
 
     // =======================
@@ -26,7 +26,7 @@ public with sharing class PrequalSolutionsAPIIntegration {
                 accounts = [
                     SELECT Id, FirstName, MiddleName, LastName, PersonMailingStreet, PersonMailingCity, State_A__c, PersonMailingPostalCode, 
                            Birthdate__c, Phone, PersonEmail, Quoted_Retainer__c, Responsible_Attorney__c, Responsible_Attorney_Email_A__c,
-                           Credit_Check_Submitted__c, Annual_household_income__c, SSN__c 
+                           Credit_Check_Submitted__c, Annual_household_income__c, Social_Security_Number__c 
                     FROM Account WHERE Id IN :accountIds
                 ];
             } else {
@@ -34,7 +34,7 @@ public with sharing class PrequalSolutionsAPIIntegration {
                     SELECT Id, Quoted_Retainer__c, Responsible_Attorney_Email_A__c, Responsible_Attorney__c, Credit_Check_Submitted__c,
                         Third_Party__r.FirstName, Third_Party__r.LastName, Third_Party__r.PersonMailingStreet,
                         Third_Party__r.PersonMailingCity, Third_Party__r.State_A__c, Third_Party__r.PersonMailingPostalCode, 
-                        Third_Party__r.Birthdate__c, Third_Party__r.Phone, Third_Party__r.PersonEmail, Third_Party__r.Annual_household_income__c, Third_Party__r.SSN__c
+                        Third_Party__r.Birthdate__c, Third_Party__r.Phone, Third_Party__r.PersonEmail, Third_Party__r.Annual_household_income__c, Third_Party__r.Social_Security_Number__c
                     FROM Account WHERE Id IN :accountIds
                 ];
             }
@@ -59,7 +59,7 @@ public with sharing class PrequalSolutionsAPIIntegration {
                         applicant.put('state', acc.State_A__c);
                         applicant.put('zip', acc.PersonMailingPostalCode);
                         applicant.put('dob', acc.Birthdate__c != null ? acc.Birthdate__c.format() : '');
-                        applicant.put('ssn', acc.SSN__c );
+                        applicant.put('ssn', acc.Social_Security_Number__c  );
                         applicant.put('phone', acc.Phone);
                         applicant.put('email', acc.PersonEmail);
                     } else {
@@ -73,7 +73,7 @@ public with sharing class PrequalSolutionsAPIIntegration {
                         applicant.put('state', acc.Third_Party__r != null ? acc.Third_Party__r.State_A__c : '');
                         applicant.put('zip', acc.Third_Party__r != null ? acc.Third_Party__r.PersonMailingPostalCode : '');
                         applicant.put('dob', acc.Third_Party__r != null && acc.Third_Party__r.Birthdate__c != null ? acc.Third_Party__r.Birthdate__c.format() : '');
-                        applicant.put('ssn', acc.Third_Party__r != null ? acc.Third_Party__r.SSN__c : '');
+                        applicant.put('ssn', acc.Third_Party__r != null ? acc.Third_Party__r.Social_Security_Number__c  : '');
                         applicant.put('phone', acc.Third_Party__r != null ? acc.Third_Party__r.Phone : '');
                         applicant.put('email', acc.Third_Party__r != null ? acc.Third_Party__r.PersonEmail : '');
                     }
@@ -140,7 +140,6 @@ public with sharing class PrequalSolutionsAPIIntegration {
                                 }
                             }
                         }
-                        // ==== END DEBUG DUMP ====
 
                         if (
                             resp != null && resp.api != null && resp.api.response != null &&
@@ -151,11 +150,11 @@ public with sharing class PrequalSolutionsAPIIntegration {
                             System.debug(LoggingLevel.INFO, 'Individual Report: ' + report);
                             Account accUpdate = new Account(Id = acc.Id);
 
-                            // 1. Save temporary_shareable_link as the report link
+                            // 1.temporary_shareable_link as the report link
                             accUpdate.Credit_Report_Link__c = report.temporary_shareable_link;
                             System.debug(LoggingLevel.INFO, 'Report Link: ' + report.temporary_shareable_link);
 
-                            // 2. Decisioning - best offer or Full Retainer or Failed-Follow up with PC
+                            // 2. Decisioning 
                             List<Decisioning> passingOffers = new List<Decisioning>();
                             for (Decisioning d : report.decisioning) {
                                 if (d != null && d.result != null && d.result.toLowerCase() == 'pass') {
@@ -171,10 +170,11 @@ public with sharing class PrequalSolutionsAPIIntegration {
                             for (String offerName : offerPriority) {
                                 for (Decisioning d : passingOffers) {
                                     if (d.criteria_set_name != null &&
-                                        d.criteria_set_name.toLowerCase().contains(offerName.toLowerCase())) {
-                                        chosenOffer = offerName;
-                                        break;
-                                    }
+    d.criteria_set_name.trim().toLowerCase() == offerName.toLowerCase()) {
+    chosenOffer = offerName;
+    break;
+}
+
                                 }
                                 if (chosenOffer != null) break;
                             }
