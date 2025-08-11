@@ -40,15 +40,20 @@ export default class SsRetainerDecision extends LightningElement {
     }
 
     get showFull() {
-        return this.creditDecision === 'Full Retainer';
+         return (
+        this.creditDecision === 'Full Retainer' ||
+        (!this.isQualified && !this.showFrozen)
+    );
     }
 
-    get showFreezeOrSupport() {
-        return (
-            this.creditDecision === 'Frozen' ||
-            this.creditDecision === 'Needs Support'
-        );
-    }
+    get showFrozen() {
+    return this.creditDecision === 'Credit Frozen';
+}
+
+
+    get showFailed() {
+    return this.creditDecision === 'Failed- Follow up with PC';
+}
 
     // Improved logic: Calculate standard retainer from discounted if needed
     get standardRetainer() {
@@ -73,12 +78,7 @@ export default class SsRetainerDecision extends LightningElement {
         return this.reducedRetainer != null ? this.reducedRetainer : 0;
     }
 
-    get showFull() {
-    return this.creditDecision === 'Full Retainer';
-}
 
-get showFailed() {
-    return this.creditDecision === 'Failed- Follow up with PC';
-}
+
 
 }

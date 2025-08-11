@@ -20,7 +20,6 @@
         </div>
     </div>
     <div class="slds-col slds-size_1-of-2 slds-p-left_large slds-text-align_right">
-        <!-- NO slds-truncate -->
         <div class="slds-text-title_caps slds-m-bottom_small slds-text-color_weak">{creditDecision}</div>
         <div class="slds-text-heading_medium slds-text-color_brand slds-m-bottom_xx-small" style="font-weight:600;">
             <lightning-formatted-number value={reducedRetainerDisplay} format-style="currency" currency-code="USD"></lightning-formatted-number>
@@ -34,7 +33,6 @@
 <!-- not qualified -->
 <template if:true={showFull}>
     <div class="slds-p-around_x-large slds-grid slds-grid_vertical slds-align_absolute-center" style="min-height: 400px;">
-        <!-- Header centered -->
         <div class="slds-col slds-size_1-of-1 slds-text-align_center">
             <h2 class="slds-text-heading_large slds-m-bottom_small" >FULL RETAINER REQUIRED</h2>
             <div class="slds-text-title slds-m-bottom_xx-small" style="font-size: 1.2rem;">{accountName}</div>
@@ -42,7 +40,6 @@
                 Based on your application, the standard retainer applies.
             </span>
         </div>
-        <!-- Retainers grid: Standard left, Decision right -->
         <div class="slds-grid slds-gutters slds-align_absolute-center slds-m-bottom_x-large" style="max-width: 700px;">
             <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-text-align_left">
                 <div class="slds-text-title_caps slds-m-bottom_small slds-text-color_weak">STANDARD RETAINER</div>
@@ -63,7 +60,27 @@
     </div>
 </template>
 
+<!-- Frozen -->
+<template if:true={showFrozen}>
+  <div class="slds-p-around_x-large slds-grid slds-grid_vertical slds-align_absolute-center" style="min-height: 400px;">
+    <div class="slds-col slds-size_1-of-1 slds-text-align_center">
+      <h2 class="slds-text-heading_large slds-m-bottom_x-small">CREDIT FREEZE DETECTED</h2>
+      <div class="slds-text-title slds-m-bottom_small" style="font-size: 1.2rem;">{accountName}</div>
+      <p class="slds-text-body_regular slds-text-color_weak slds-m-bottom_large">
+        We can’t complete the evaluation because a credit freeze is active.
+      </p>
 
+      <div class="slds-text-title_caps slds-text-color_weak">STANDARD RETAINER</div>
+      <div class="slds-text-heading_medium slds-m-top_xx-small" style="font-weight:600;">
+        <lightning-formatted-number
+          value={standardRetainer}
+          format-style="currency"
+          currency-code="USD">
+        </lightning-formatted-number>
+      </div>
+    </div>
+  </div>
+</template>
 
         </lightning-card>
     </div>

@@ -3,6 +3,11 @@ public without sharing class PrequalSolutionsClientAPI {
      * Usage:
      *   PrequalSolutionsClientAPI.createReport(accountIds); 
      */
+    
+    private static String resolveScenario() {
+        Prequal_Settings__c cs = Prequal_Settings__c.getOrgDefaults();
+        return (cs != null) ? cs.Scenario__c : null;
+    }
 
     public class APIIntegrationJob implements Queueable, Database.AllowsCallouts {
         private List<Id> accountIds;
@@ -12,6 +17,10 @@ public without sharing class PrequalSolutionsClientAPI {
         }
 
         public void execute(QueueableContext context) {
+            
+            String scenario = resolveScenario();
+            System.debug(LoggingLevel.INFO, 'Prequal scenario in use: ' + scenario);
+            
             List<Account> accounts = [
                 SELECT Id, FirstName, MiddleName, LastName, PersonMailingStreet, PersonMailingCity, State_A__c,
                        PersonMailingPostalCode, Birthdate__c, Phone, PersonEmail, Quoted_Retainer__c,
@@ -42,7 +51,7 @@ public without sharing class PrequalSolutionsClientAPI {
 
                     Map<String, Object> requestPayload = new Map<String, Object>{
                         'applicant' => applicant,
-                        'scenario' => 'bnGbqo'
+                        'scenario' => scenario
                     };
 
                     HttpRequest req = new HttpRequest();
@@ -118,7 +127,7 @@ public without sharing class PrequalSolutionsClientAPI {
                                     accUpdate.Quoted_Retainer_Amount__c = acc.Quoted_Retainer__c * multiplier;
                                 }
                             } else if (creditFrozen) {
-                                accUpdate.Credit_Decision__c = 'Failed- Follow up with PC';
+                                accUpdate.Credit_Decision__c = 'Credit Frozen';
                                 accUpdate.Credit_Failure_Type__c = 'freeze';
                                 accUpdate.Credit_Check_Complete__c = false;
                                 accUpdate.Quoted_Retainer_Amount__c = acc.Quoted_Retainer__c;
