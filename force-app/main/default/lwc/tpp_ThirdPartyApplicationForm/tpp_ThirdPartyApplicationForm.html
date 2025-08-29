@@ -1,0 +1,139 @@
+<template>
+  <div class="page">
+    <header class="hero" role="banner">
+      <img src={topLogoUrl} alt="Modern Family Law Logo" class="hero-logo" />
+      <h1 class="hero-title">Making Family Law Easier</h1>
+    </header>
+
+    <main class="form-wrap" role="main">
+      <lightning-card class="form-card" variant="base">
+        <div class="card-body slds-p-horizontal_medium slds-p-bottom_medium">
+
+          <!-- Column wrapper so headings + inputs share the same left edge -->
+          <div class="form-column">
+            <h1 class="form-title">SimpleStart Application</h1>
+            <h2 class="form-subtitle">Get Pre-Qualified Instantly!</h2>
+            <p class="form-description">
+              Take the first step towards a reduced retainer without affecting your credit score, get
+              pre-qualified now! Our proprietary software uses a 'soft' credit pull to match your credit
+              history with underwriting criteria, providing a reliable pre-qualification without impacting
+              your credit.
+            </p>
+
+            <form onsubmit={handleSubmit} novalidate>
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input class="big-label" label="First Name" name="firstName"
+                  value={formData.firstName} onchange={handleInputChange}
+                  message-when-value-missing="First name is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Middle Name" name="middleName"
+                  value={formData.middleName} onchange={handleInputChange}>
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Last Name" name="lastName"
+                  value={formData.lastName} onchange={handleInputChange}
+                  message-when-value-missing="Last name is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Birthdate" name="birthdate" type="date"
+                  value={formData.birthdate} onchange={handleInputChange}
+                  message-when-value-missing="Birthdate is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Mobile Phone" name="mobilePhone" type="tel"
+                  value={formData.mobilePhone} onchange={handleInputChange}
+                  message-when-value-missing="Mobile phone is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Social Security Number" name="socialSecurityNumber" type="text"
+                  value={formData.socialSecurityNumber} onchange={handleInputChange}
+                  message-when-value-missing="Social Security Number is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Email" name="email" type="email"
+                  value={formData.email} onchange={handleInputChange}
+                  message-when-value-missing="Email is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Street Address" name="street"
+                  value={formData.street} onchange={handleInputChange}
+                  message-when-value-missing="Street address is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="City" name="city"
+                  value={formData.city} onchange={handleInputChange}
+                  message-when-value-missing="City is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-combobox name="state" label="State" value={formData.state}
+                  placeholder="Select State" options={stateOptions}
+                  onchange={handleInputChange}>
+                </lightning-combobox>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Postal Code" name="postalCode"
+                  value={formData.postalCode} onchange={handleInputChange}
+                  message-when-value-missing="Postal code is required.">
+                </lightning-input>
+              </div>
+
+              <div class="slds-form-element slds-m-bottom_small">
+                <lightning-input label="Annual Household Income" name="annualIncome" type="number"
+                  formatter="currency" step="0.01" value={formData.annualIncome}
+                  onchange={handleInputChange}
+                  message-when-value-missing="Income is required.">
+                </lightning-input>
+              </div>
+
+              <div class="button-container">
+                <template if:true={isLoading}>
+                  <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </template>
+                <template if:false={isLoading}>
+                  <lightning-button variant="brand" type="submit" label="Submit Application"
+                    class="submit-button">
+                  </lightning-button>
+                </template>
+              </div>
+            </form>
+
+            <template if:true={errorMessage}>
+              <div class="slds-box slds-theme_error slds-m-top_medium">
+                <lightning-icon icon-name="utility:error" alternative-text="Error"
+                  size="x-small" class="slds-m-right_x-small">
+                </lightning-icon>
+                {errorMessage}
+              </div>
+            </template>
+          </div>
+          <!-- /form-column -->
+
+        </div>
+
+        <footer class="bottom-section">
+          <p class="bottom-text">Make the most of your day.</p>
+        </footer>
+      </lightning-card>
+    </main>
+  </div>
+</template>

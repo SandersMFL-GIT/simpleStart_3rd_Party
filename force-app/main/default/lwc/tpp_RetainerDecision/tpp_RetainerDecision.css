@@ -1,0 +1,98 @@
+/* Page = offer background, center content */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* stick to top */
+  min-height: 100vh;
+  /* Replace `TPPbackgroundImage` with your static resource name */
+  background: url('/resource/TPPbackgroundImage') no-repeat center center fixed;
+  background-size: cover;   /* scale to full page */
+  padding-top: 4rem; /* adjust spacing */
+}
+
+
+/* Retainer container holds exactly one centered column */
+.retainer-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* Force the single column width regardless of SLDS size classes */
+.retainer-container > div {
+  width: 560px;            
+  max-width: 92vw;         
+  flex: 0 0 auto;
+}
+
+/* Card fills the forced column width */
+.retainer-card {
+  display: block;
+  width: 100%;
+  background: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+/* Image area (top banner) */
+.image-section {
+  height: 280px;
+  /* you can also use another static resource here if you want 
+     a *different banner image* than the full-page background */
+  background: url('/resource/OfferBanner') no-repeat center center;
+  background-size: cover;     
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Content */
+.content-section {
+  padding: 2rem;
+  text-align: center;
+}
+
+.client-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.qualification-text {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+.offer-tier,
+.retainer-amount {
+  color: #0070d2;
+}
+
+.offer-tier {
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.retainer-amount {
+  font-weight: 700;
+  font-size: 2.4rem;
+}
+
+/* optional: slight shrink on small screens */
+@media (max-width: 420px) {
+  .retainer-container > div { width: 94vw; }
+  .image-section { height: 220px; }
+  .retainer-amount { font-size: 2rem; }
+}
+
+/* Narrow the input fields inside the form */
+.form-card lightning-input,
+.form-card lightning-combobox {
+  max-width: 220px;   
+  width: 100%;
+  margin: 0 auto;     
+  display: block;
+}

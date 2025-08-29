@@ -1,0 +1,23 @@
+<template>
+  <div class="waiting-container">
+    <div>
+      <lightning-card class="wait-card">
+        <!-- Top banner (same style as retainer card) -->
+        <div class="image-section" style={bannerStyle}></div>
+
+        <!-- Content -->
+        <div class="content-section">
+          <lightning-spinner
+            alternative-text="Waiting for Credit Decision..."
+            size="large">
+          </lightning-spinner>
+
+          <h2 class="title slds-m-top_large">Processing your application…</h2>
+          <p class="subtitle slds-m-top_x-small">
+            Please wait while we finalize your credit decision.
+          </p>
+        </div>
+      </lightning-card>
+    </div>
+  </div>
+</template>
