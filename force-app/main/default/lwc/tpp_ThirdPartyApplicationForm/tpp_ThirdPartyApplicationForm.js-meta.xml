@@ -13,11 +13,10 @@
         <targetConfig targets="lightning__FlowScreen">
             <!-- Input properties -->
             <property name="recordTypeId" type="String" label="Record Type Id"/>
-            <property name="recordId" type="String" label="Account Id"/>
             
             <!-- Output properties -->
             <property name="thirdPartyId" type="String" label="Third Party Account Id"/>
-            <property name="parentAccountId" type="String" label="Parent Account Id (deprecated)" />
+            <property name="parentAccountId" type="String" label="Parent Account Id" />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

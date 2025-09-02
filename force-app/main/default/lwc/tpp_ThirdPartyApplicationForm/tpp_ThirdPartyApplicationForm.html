@@ -24,6 +24,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input class="big-label" label="First Name" name="firstName"
                   value={formData.firstName} onchange={handleInputChange}
+                  required
                   message-when-value-missing="First name is required.">
                 </lightning-input>
               </div>
@@ -37,6 +38,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Last Name" name="lastName"
                   value={formData.lastName} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Last name is required.">
                 </lightning-input>
               </div>
@@ -44,6 +46,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Birthdate" name="birthdate" type="date"
                   value={formData.birthdate} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Birthdate is required.">
                 </lightning-input>
               </div>
@@ -51,6 +54,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Mobile Phone" name="mobilePhone" type="tel"
                   value={formData.mobilePhone} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Mobile phone is required.">
                 </lightning-input>
               </div>
@@ -58,6 +62,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Social Security Number" name="socialSecurityNumber" type="text"
                   value={formData.socialSecurityNumber} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Social Security Number is required.">
                 </lightning-input>
               </div>
@@ -65,6 +70,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Email" name="email" type="email"
                   value={formData.email} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Email is required.">
                 </lightning-input>
               </div>
@@ -72,6 +78,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Street Address" name="street"
                   value={formData.street} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Street address is required.">
                 </lightning-input>
               </div>
@@ -79,6 +86,7 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="City" name="city"
                   value={formData.city} onchange={handleInputChange}
+                  required
                   message-when-value-missing="City is required.">
                 </lightning-input>
               </div>
@@ -86,13 +94,16 @@
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-combobox name="state" label="State" value={formData.state}
                   placeholder="Select State" options={stateOptions}
-                  onchange={handleInputChange}>
+                  onchange={handleInputChange}
+                  required
+                  message-when-value-missing="State is required.">
                 </lightning-combobox>
               </div>
 
               <div class="slds-form-element slds-m-bottom_small">
                 <lightning-input label="Postal Code" name="postalCode"
                   value={formData.postalCode} onchange={handleInputChange}
+                  required
                   message-when-value-missing="Postal code is required.">
                 </lightning-input>
               </div>
@@ -101,6 +112,7 @@
                 <lightning-input label="Annual Household Income" name="annualIncome" type="number"
                   formatter="currency" step="0.01" value={formData.annualIncome}
                   onchange={handleInputChange}
+                  required
                   message-when-value-missing="Income is required.">
                 </lightning-input>
               </div>

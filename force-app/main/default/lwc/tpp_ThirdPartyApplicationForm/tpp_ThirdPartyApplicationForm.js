@@ -229,8 +229,6 @@ export default class SsThirdPartyApplicationForm extends LightningElement {
         this.clearErrors();
 
         try {
-            // Show success message
-            this.showSuccessToast();
             // Navigate to next Flow screen
             this.navigateNext();
         } catch (error) {
@@ -296,18 +294,7 @@ export default class SsThirdPartyApplicationForm extends LightningElement {
         const navigateNextEvent = new FlowNavigationNextEvent();
         this.dispatchEvent(navigateNextEvent);
     }
-
-    /**
-     * @description Shows success toast message
-     */
-    showSuccessToast() {
-        const event = new ShowToastEvent({
-            title: 'Success',
-            message: 'Application submitted successfully!',
-            variant: 'success'
-        });
-        this.dispatchEvent(event);
-    }
+   
 
     /**
      * @description Shows error toast message

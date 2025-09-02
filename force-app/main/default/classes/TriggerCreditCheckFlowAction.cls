@@ -36,7 +36,9 @@ public without sharing class TriggerCreditCheckFlowAction {
             }
             if (!toUpdate.isEmpty()) update toUpdate;
 
-            PrequalSolutionsClientAPI.createReport(accountIds);
+            for (CreditCheckInput input : inputList) {
+                System.enqueueJob(new PrequalSolutionsThirdPartyAPI.APIIntegrationJob(input.thirdPartyAccountId, input.parentAccountId));
+            }
 
             result.status = 'Success';
             result.message = 'Credit_Check_Submitted__c set to true and API call triggered for ' + toUpdate.size() + ' accounts.';

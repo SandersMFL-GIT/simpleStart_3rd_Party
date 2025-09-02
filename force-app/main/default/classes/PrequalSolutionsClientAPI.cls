@@ -148,7 +148,7 @@ public without sharing class PrequalSolutionsClientAPI {
                         System.debug(LoggingLevel.ERROR, 'Callout failed: ' + res.getBody());
                     }
                 } catch (Exception ex) {
-                    System.debug(LoggingLevel.ERROR, 'Error for Account ' + acc.Id + ': ' + ex.getMessage());
+                    System.debug(LoggingLevel.ERROR, 'An exception occurred: ' + ex.getMessage());
                 }
             }
 
