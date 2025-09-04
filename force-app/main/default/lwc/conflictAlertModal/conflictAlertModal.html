@@ -1,0 +1,152 @@
+<template>
+  <lightning-modal-header>
+    <h2 class="slds-text-heading_medium" id="modal-title">
+      <template if:false={viewing}>
+        <lightning-icon icon-name="utility:warning" size="small" class="slds-m-right_x-small"></lightning-icon>
+        Potential Conflict
+      </template>
+      <template if:true={viewing}>
+        <lightning-icon icon-name="utility:search" size="small" class="slds-m-right_x-small"></lightning-icon>
+        Potential Matches
+      </template>
+    </h2>
+  </lightning-modal-header>
+
+  <lightning-modal-body class={bodyClass}>
+    <!-- Loading Overlay -->
+    <template if:true={loading}>
+      <div class="ca-spinner-overlay" role="status" aria-live="polite">
+        <lightning-spinner 
+          alternative-text={loadingMessage} 
+          size="medium">
+        </lightning-spinner>
+        <span class="sr-only">{loadingMessage}</span>
+      </div>
+    </template>
+
+    <!-- Error Display -->
+    <template if:true={error}>
+      <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+        <span class="slds-assistive-text">Error</span>
+        <lightning-icon icon-name="utility:error" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+        <h4 class="slds-text-heading_small">{error.title}</h4>
+        <p>{error.message}</p>
+      </div>
+    </template>
+
+    <!-- Main Conflict Alert Content -->
+    <template if:false={viewing}>
+      <div class="ca-alert-content" role="alert" aria-labelledby="modal-title">
+        <!-- Primary Alert Message -->
+        <div class="ca-intro" aria-live="assertive">
+          {introLine}
+        </div>
+
+        <!-- Detailed Information -->
+        <template if:true={hasDetails}>
+          <lightning-formatted-rich-text
+            class="ca-details"
+            value={detailsRich}
+            disable-linkify="true">
+          </lightning-formatted-rich-text>
+          
+          <!-- Inline Matches Display - Always show when available -->
+          <div class="ca-view-matches-link slds-m-top_small">
+            <!-- Inline Matches Display -->
+            <template if:true={showMatchesInline}>
+              <div class="ca-inline-matches slds-m-top_small">
+                <template if:true={matches.length}>
+                  <div class="slds-m-bottom_x-small">
+                    <p class="slds-text-body_small slds-text-color_weak">
+                      <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                      {matchesCountText}. Click on a record to view details.
+                    </p>
+                  </div>
+                  
+                  <ul class="ca-matches-list" role="list" aria-label="Potential conflict matches">
+                    <template for:each={matches} for:item="match">
+                      <li key={match.id} class="ca-inline-match-item" role="listitem">
+                        <a 
+                          href={match.url} 
+                          data-id={match.id} 
+                          onclick={handleNav}
+                          class="ca-inline-match-link"
+                          title="Click to view record details">
+                          
+                          <lightning-icon icon-name="utility:account" size="x-small" class="slds-m-right_x-small"></lightning-icon>
+                          <span class="ca-match-name">{match.name}</span>
+                        </a>
+                        
+                        <template if:true={match.subtitle}>
+                          <div class="ca-match-subtitle slds-text-color_weak slds-text-body_small slds-m-top_xx-small">
+                            {match.subtitle}
+                          </div>
+                        </template>
+                      </li>
+                    </template>
+                  </ul>
+                </template>
+                
+                <template if:false={matches.length}>
+                  <div class="ca-no-matches-inline slds-text-color_weak slds-text-body_small">
+                    <lightning-icon icon-name="utility:info" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+                    No potential matches found.
+                  </div>
+                </template>
+              </div>
+            </template>
+            
+            <!-- Loading state for matches -->
+            <template if:true={loading}>
+              <div class="ca-matches-loading slds-m-top_small">
+                <lightning-spinner size="small" alternative-text="Loading matches..."></lightning-spinner>
+                <span class="slds-text-body_small slds-text-color_weak slds-m-left_small">Loading potential matches...</span>
+              </div>
+            </template>
+          </div>
+        </template>
+
+        <!-- Score Display - Hidden per user request -->
+        <!-- 
+        <template if:true={hasScore}>
+          <div class="ca-score" role="status" aria-label="Conflict Score">
+            <span class="slds-badge slds-theme_warning slds-m-right_x-small">
+              <lightning-icon icon-name="utility:chart" size="x-small" class="slds-m-right_xx-small"></lightning-icon>
+              Score
+            </span>
+            <span class="ca-score-value" aria-describedby="score-description">
+              {displayScore}
+            </span>
+            <span id="score-description" class="slds-assistive-text">
+              out of 100, where higher scores indicate stronger potential conflicts
+            </span>
+          </div>
+        </template>
+        -->
+      </div>
+    </template>
+  </lightning-modal-body>
+
+  <lightning-modal-footer>
+    <!-- Simplified Footer - Only Close and Dismiss -->
+    <div class="slds-grid slds-grid_align-end slds-gutters_small">
+      <lightning-button 
+        variant="neutral" 
+        label="Close" 
+        onclick={handleClose}
+        disabled={loading}
+        title="Close without taking action">
+      </lightning-button>
+      
+      <lightning-button 
+        variant="destructive" 
+        label="Dismiss Alert" 
+        onclick={handleDismiss} 
+        disabled={loading}
+        title="Mark this conflict as reviewed and dismiss"
+        icon-name="utility:check"
+        icon-position="left">
+      </lightning-button>
+    </div>
+  </lightning-modal-footer>
+</template>

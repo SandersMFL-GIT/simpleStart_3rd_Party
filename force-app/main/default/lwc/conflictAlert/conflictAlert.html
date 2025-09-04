@@ -1,0 +1,145 @@
+<template>
+  <!-- Main Conflict Alert Modal -->
+  <template if:true={showModal}>
+    <section 
+      role="dialog" 
+      tabindex="-1" 
+      aria-modal="true" 
+      aria-labelledby="conflict-alert-title"
+      aria-describedby="conflict-alert-content" 
+      class="conflict-modal slds-is-absolute">
+      
+      <div class="slds-modal__container slds-p-around_medium slds-card">
+        <header class="slds-modal__header slds-p-bottom_small">
+          <h2 id="conflict-alert-title" class="slds-text-heading_medium slds-truncate">
+            Potential Conflict
+          </h2>
+        </header>
+
+        <div id="conflict-alert-content" class="slds-modal__content slds-p-vertical_small">
+          <template if:true={loading}>
+            <div class="loading-container">
+              <div class="loading-spinner" role="status" aria-label="Loading"></div>
+              <span class="sr-only">Loading conflict information...</span>
+            </div>
+          </template>
+          
+          <template if:false={loading}>
+            <p class="slds-m-bottom_small">{message}</p>
+            <template if:true={score}>
+              <p class="slds-text-color_weak">
+                <strong>Conflict Score:</strong> {score}
+              </p>
+            </template>
+          </template>
+        </div>
+
+        <footer class="slds-modal__footer slds-p-top_small slds-grid slds-grid_align-spread">
+          <lightning-button 
+            variant="neutral" 
+            label="View Matches" 
+            onclick={handleView}
+            disabled={loading}
+            title="View potential conflict matches">
+          </lightning-button>
+          
+          <lightning-button 
+            variant="brand-outline" 
+            label="Dismiss" 
+            onclick={handleDismiss} 
+            disabled={_isDismissing}
+            title="Dismiss this conflict alert">
+            <template if:true={_isDismissing}>
+              <lightning-spinner alternative-text="Dismissing..." size="x-small"></lightning-spinner>
+            </template>
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    
+    <!-- Modal Backdrop -->
+    <div class="slds-backdrop slds-backdrop_open" onclick={handleBackdropClick}></div>
+  </template>
+
+  <!-- Potential Matches Results Modal -->
+  <template if:true={showResults}>
+    <section 
+      role="dialog" 
+      tabindex="-1" 
+      aria-modal="true" 
+      aria-labelledby="results-title"
+      aria-describedby="results-content" 
+      class="conflict-modal slds-is-absolute">
+      
+      <div class="slds-modal__container slds-p-around_medium slds-card">
+        <header class="slds-modal__header slds-p-bottom_small slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+          <h2 id="results-title" class="slds-text-heading_medium slds-truncate">
+            Potential Matches
+          </h2>
+          <lightning-button-icon 
+            icon-name="utility:close" 
+            alternative-text="Close matches dialog" 
+            onclick={closeResults}
+            title="Close">
+          </lightning-button-icon>
+        </header>
+
+        <div id="results-content" class="slds-modal__content slds-p-vertical_small">
+          <template if:true={loading}>
+            <div class="loading-container">
+              <div class="loading-spinner" role="status" aria-label="Loading"></div>
+              <span class="sr-only">Loading potential matches...</span>
+            </div>
+          </template>
+
+          <template if:false={loading}>
+            <template if:true={matches.length}>
+              <ul class="slds-has-dividers_around-space" role="list">
+                <template for:each={matches} for:item="match">
+                  <li key={match.id} class="slds-item" role="listitem">
+                    <a 
+                      href={match.url} 
+                      data-id={match.id} 
+                      onclick={handleRowClick}
+                      title={match.name}
+                      class="text-truncate">
+                      {match.name}
+                    </a>
+                    <template if:true={match.subtitle}>
+                      <div class="slds-text-color_weak slds-text-body_small text-truncate">
+                        {match.subtitle}
+                      </div>
+                    </template>
+                  </li>
+                </template>
+              </ul>
+            </template>
+            
+            <template if:false={matches.length}>
+              <div class="slds-text-align_center slds-p-vertical_large">
+                <lightning-icon 
+                  icon-name="utility:info" 
+                  size="small" 
+                  class="slds-m-bottom_small">
+                </lightning-icon>
+                <p class="slds-text-color_weak">No potential matches found.</p>
+              </div>
+            </template>
+          </template>
+        </div>
+
+        <footer class="slds-modal__footer slds-p-top_small slds-text-align_center">
+          <lightning-button 
+            variant="neutral" 
+            label="Close" 
+            onclick={closeResults}
+            title="Close matches dialog">
+          </lightning-button>
+        </footer>
+      </div>
+    </section>
+    
+    <!-- Modal Backdrop -->
+    <div class="slds-backdrop slds-backdrop_open" onclick={closeResults}></div>
+  </template>
+</template>

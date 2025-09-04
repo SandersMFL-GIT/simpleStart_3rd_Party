@@ -1,0 +1,199 @@
+/**
+ * ConflictAlert Lightning Web Component Styles
+ * Provides consistent styling for conflict alert modals and results display
+ */
+
+/* ========== MODAL STYLES ========== */
+
+.conflict-modal {
+    z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conflict-modal .slds-modal__container {
+    max-width: 500px;
+    min-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    /* Remove white background and shadow for cleaner modal appearance */
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0.25rem;
+}
+
+/* ========== CONTENT STYLES ========== */
+
+.conflict-modal .slds-modal__header h2 {
+    color: #c23934;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.conflict-modal .slds-modal__header h2::before {
+    content: '⚠️';
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.conflict-modal .slds-modal__content {
+    min-height: 60px;
+    line-height: 1.5;
+}
+
+.conflict-modal .slds-modal__content p {
+    margin-bottom: 0.75rem;
+}
+
+.conflict-modal .slds-modal__content .slds-text-color_weak {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* ========== RESULTS MODAL STYLES ========== */
+
+.conflict-modal .slds-has-dividers_around-space .slds-item {
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+}
+
+.conflict-modal .slds-has-dividers_around-space .slds-item:hover {
+    background-color: #f4f6f9;
+}
+
+.conflict-modal .slds-has-dividers_around-space .slds-item a {
+    color: #0176d3;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.conflict-modal .slds-has-dividers_around-space .slds-item a:hover {
+    text-decoration: underline;
+}
+
+.conflict-modal .slds-has-dividers_around-space .slds-item .slds-text-color_weak {
+    font-size: 0.8125rem;
+    margin-top: 0.25rem;
+}
+
+/* ========== LOADING STATES ========== */
+
+.loading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    min-height: 100px;
+}
+
+.loading-spinner {
+    width: 2rem;
+    height: 2rem;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #0176d3;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ========== BUTTON STYLES ========== */
+
+.conflict-modal .slds-modal__footer lightning-button {
+    margin: 0 0.25rem;
+}
+
+.conflict-modal .slds-modal__footer lightning-button:first-child {
+    margin-left: 0;
+}
+
+.conflict-modal .slds-modal__footer lightning-button:last-child {
+    margin-right: 0;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+@media (max-width: 768px) {
+    .conflict-modal .slds-modal__container {
+        min-width: 90vw;
+        max-width: 95vw;
+        margin: 1rem;
+    }
+    
+    .conflict-modal .slds-modal__footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .conflict-modal .slds-modal__footer lightning-button {
+        width: 100%;
+        margin: 0;
+    }
+}
+
+/* ========== ACCESSIBILITY ENHANCEMENTS ========== */
+
+.conflict-modal .slds-modal__container:focus {
+    outline: 2px solid #0176d3;
+    outline-offset: -2px;
+}
+
+.conflict-modal [role="dialog"] {
+    /* Ensure screen readers can properly navigate the modal */
+    outline: none;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .conflict-modal .slds-modal__container {
+        border: 2px solid;
+    }
+    
+    .conflict-modal .slds-modal__header h2 {
+        color: inherit;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .conflict-modal .slds-has-dividers_around-space .slds-item {
+        transition: none;
+    }
+}
+
+/* ========== UTILITY CLASSES ========== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
