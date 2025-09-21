@@ -1,0 +1,157 @@
+/* Minimal Third Party Application Form */
+
+/* Page Layout */
+:host {
+    --page-background-color: #0070d2; 
+}
+.page {
+    min-height: 100vh;
+    background: var(--page-background-color);
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Hero Section */
+.hero {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* Logo */
+.hero-logo {
+    max-width: 220px;
+    height: auto;
+    margin: 0 auto 0.5rem auto;
+    display: block;
+}
+
+/* Title */
+.hero-title {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin: 0;
+    color: white;
+    text-align: center;
+}
+
+/* Form Container */
+.form-wrap {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Card */
+.form-card {
+    width: 60vw;
+    max-width: 600px;
+    min-width: 300px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.card-body {
+    padding: 1rem 3rem 1rem 3rem; /* top right bottom left */
+}
+
+/* Bottom Section */
+.bottom-section {
+    background: #e4e4e4;
+    padding: 1rem 3rem;
+    text-align: center;
+    margin-top: 1.5rem 0 0;
+    
+   
+}
+
+.bottom-text {
+    margin: 0;
+    color: #989797;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+
+
+/* Submit Button */
+.button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.submit-button {
+    background-color: #1976d2 !important;
+    border-color: #1976d2 !important;
+}
+
+
+
+
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-card {
+        width: 90vw;
+    }
+    
+    .hero-logo {
+        max-width: 180px;
+    }
+    
+    .hero-title {
+        font-size: 1.25rem;
+    }
+    
+    .bottom-section {
+        padding: 0.75rem 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .bottom-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Form Text Styling */
+.form-title {
+    font-size: 1.75rem; /* Large text for the main title */
+    font-weight: 500;
+    color: #333;
+    margin-top: 0;
+    margin-left: -1em;
+    margin-right: -3em;
+    margin-bottom: 1.5rem; /* Adds a bit of space below the main title */
+}
+
+.form-subtitle {
+    font-size: 1.25rem; /* Slightly smaller text for the subtitle */
+    font-weight: 400;
+    color: #555;
+    margin-top: 0;
+    margin-left: -1em;
+    margin-right: -3em;
+    /* This is the key change to create more space */
+    margin-bottom: 1.5rem; 
+}
+
+.form-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.5;
+    margin-top: 0;
+    margin-left: -1em;
+    margin-right: -3em;
+    margin-bottom: 1.5rem; /* Adds space between the text and the first input field */
+}
+
+
+
+

@@ -1,0 +1,22 @@
+.waiting-container {
+    background-color: #5b6acd; /* Blue background to match other components */
+    min-height: 100vh;
+}
+
+.waiting-card {
+    background-color: #ffffff; /* Ensure card stays white */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    border-radius: 0.25rem;
+}
+
+.waiting-content {
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.waiting-message {
+    margin-top: 1.5rem;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #333;
+}

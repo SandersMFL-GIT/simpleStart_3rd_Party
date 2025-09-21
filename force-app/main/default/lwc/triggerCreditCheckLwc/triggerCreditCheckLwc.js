@@ -1,5 +1,4 @@
 import { LightningElement, api, track } from 'lwc';
-import launchCreditCheck from '@salesforce/apex/PrequalSolutionsAPIIntegration.launchCreditCheck';
 
 export default class TriggerCreditCheckLwc extends LightningElement {
     @api recordId;

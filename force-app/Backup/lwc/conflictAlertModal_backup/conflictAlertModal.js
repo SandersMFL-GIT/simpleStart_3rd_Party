@@ -3,8 +3,6 @@ import LightningModal from 'lightning/modal';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { NavigationMixin } from 'lightning/navigation';
 import findPotentialConflicts from '@salesforce/apex/ConflictAlertController.findPotentialConflicts';
-// NEW: Apex method to create review tasks
-//import createConflictReviewTasks from '@salesforce/apex/ConflictAlertController.createConflictReviewTasks';
 
 /**
  * ConflictAlertModal Lightning Web Component
@@ -291,8 +289,7 @@ export default class ConflictAlertModal extends NavigationMixin(LightningModal) 
             id: match.Id || match.id || `match-${index}`,
             name: match.Name || match.name || 'Unknown',
             subtitle: this.buildMatchSubtitle(match),
-            // UPDATED: build Lightning record URL for Accounts so anchor tags can open in a new tab
-            url: `/lightning/r/Account/${match.Id || match.id}/view`
+            url: `/${match.Id || match.id}`
         }));
     }
 
@@ -421,30 +418,5 @@ export default class ConflictAlertModal extends NavigationMixin(LightningModal) 
             variant: 'success',
             mode: 'dismissable'
         }));
-    }
-
-    // NEW: create tasks for Responsible Attorney & Paralegal
-    /**
-     * Handle "Conflict Check Needed" button:
-     * Creates review Tasks for Responsible Attorney & Responsible Paralegal.
-     */
-    async handleCreateConflictTasks() {
-        if (this.loading) return;
-        this.loading = true;
-        this.error = null;
-
-        try {
-            await createConflictReviewTasks({ accountId: this.accountId });
-            this.showSuccessToast(
-                'Conflict tasks created',
-                'Tasks were created for the responsible attorney and paralegal.'
-            );
-            // Optionally close after creation:
-            // this.close('tasks_created');
-        } catch (error) {
-            this.handleError('Failed to create conflict-review tasks', error);
-        } finally {
-            this.loading = false;
-        }
     }
 }

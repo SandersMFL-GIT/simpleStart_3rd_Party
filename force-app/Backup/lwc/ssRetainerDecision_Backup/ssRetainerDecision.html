@@ -1,0 +1,102 @@
+<template>
+    <div class="retainer-container slds-grid slds-grid_align-center slds-p-around_medium">
+        <div class="slds-large-size_4-of-12 slds-medium-size_1-of-2 slds-size_1-of-1">
+            <lightning-card class="retainer-card">
+                <!-- Qualified: Gold, Silver, Bronze -->
+                <template if:true={isQualified}>
+                    <div class="slds-p-around_none slds-grid slds-grid_vertical vertical-grid">
+                        <!-- Image section - top portion -->
+                        <div class="slds-col slds-size_1-of-1 image-section">
+                        </div>
+                        
+                        <!-- Content section - bottom portion -->
+                        <div class="slds-col slds-size_1-of-1 slds-p-around_medium content-section">
+                            <!-- Client name -->
+                            <div class="centered-text margin-bottom-1">
+                                <div class="slds-text-title client-name">{accountName}</div>
+                            </div>
+                            
+                            <div class="centered-text margin-bottom-1-5">
+                                <div class="slds-text-body_regular qualification-text">
+                                    You have qualified as <span class="slds-text-color_brand slds-text-title_bold">{creditDecision}</span>.
+                                </div>
+                            </div>
+                            
+                        <!-- Single, centered retainer amount display -->
+                        <div class="centered-text margin-top-1-5">
+                            <div class="offer-tier">{creditDecision}</div>
+                            <div class="slds-text-heading_large retainer-amount brand-text">
+                                <lightning-formatted-number value={reducedRetainerDisplay} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </template>
+                
+                <!-- Not qualified -->
+                <template if:true={showFull}>
+                    <div class="slds-p-around_none slds-grid slds-grid_vertical vertical-grid">
+                        <!-- Image section - top portion -->
+                        <div class="slds-col slds-size_1-of-1 image-section family-law-image">
+                        </div>
+                        
+                        <!-- Content section - bottom portion -->
+                        <div class="slds-col slds-size_1-of-1 slds-p-around_medium content-section">
+                            <!-- Client name -->
+                            <div class="centered-text margin-bottom-1">
+                                <div class="slds-text-title client-name">{accountName}</div>
+                            </div>
+                            
+                            <div class="centered-text margin-bottom-1-5">
+                                <div class="slds-text-body_regular qualification-text">
+                                    Based on your application, the standard retainer applies.
+                                </div>
+                            </div>
+                            
+                            <!-- Single retainer amount display -->
+                            <div class="centered-text">
+                                <div class="slds-text-heading_large retainer-amount dark-text">
+                                    <lightning-formatted-number value={quotedRetainer} format-style="currency" currency-code="USD"></lightning-formatted-number>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Frozen -->
+                <template if:true={showFrozen}>
+                    <div class="slds-p-around_none slds-grid slds-grid_vertical vertical-grid">
+                        <!-- Image section - top portion -->
+                        <div class="slds-col slds-size_1-of-1 image-section family-law-image">
+                        </div>
+                        
+                        <!-- Content section - bottom portion -->
+                        <div class="slds-col slds-size_1-of-1 slds-p-around_medium content-section">
+                            <!-- Client name -->
+                            <div class="centered-text margin-bottom-1">
+                                <div class="slds-text-title client-name">{accountName}</div>
+                            </div>
+                            
+                            <div class="centered-text margin-bottom-1-5">
+                                <div class="slds-text-body_regular qualification-text">
+                                    We can't complete the evaluation because a credit freeze is active.
+                                </div>
+                            </div>
+                            
+                            <!-- Single retainer amount display -->
+                            <div class="centered-text">
+                                <div class="slds-text-heading_large retainer-amount dark-text">
+                                    <lightning-formatted-number
+                                        value={standardRetainer}
+                                        format-style="currency"
+                                        currency-code="USD">
+                                    </lightning-formatted-number>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </lightning-card>
+        </div>
+    </div>
+</template>

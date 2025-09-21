@@ -1,0 +1,129 @@
+/* === Page Layout === */
+:host {
+  --page-background-color: #0070d2;
+  --field-column-width: 500px;   /* width for headings + inputs column (tweak 320–400px) */
+}
+.page {
+  min-height: 100vh;
+  background: url('/resource/TPPbackgroundImage') no-repeat center center fixed;
+  background-size: cover;   /* scales image to cover full page */
+  font-family: 'Salesforce Sans', Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 2rem 2rem;
+}
+
+
+/* === Hero === */
+.hero {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.hero-logo {
+  max-width: 400px;
+  height: auto;
+  margin: 0 auto 0.2rem;
+  display: block;
+}
+.hero-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;          /* white */
+  text-shadow: 0 1px 3px rgba(0,0,0,.5);  /* optional: glow for contrast */
+}
+
+
+/* === Form Container / Card === */
+.form-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+/* match the other cards’ feel */
+.form-card {
+  width: 600px;
+  max-width: 92vw;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.card-body {
+  padding: 1.25rem 2rem 2rem;
+}
+
+/* Column so headings + inputs share the same left edge */
+.form-column {
+  width: var(--field-column-width);
+  max-width: 100%;
+  margin: 0 auto; /* centers the whole column in the card */
+}
+
+/* Inputs occupy the column width and align left */
+.form-card lightning-input,
+.form-card lightning-combobox {
+  width: 100%;
+  display: block;
+  margin: 0;
+}
+
+/* === Footer strip on the card === */
+.bottom-section {
+  background: #e9ecef;
+  padding: 1rem 2rem;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.bottom-text {
+  margin: 0;
+  color: #7a7a7a;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+/* === Headings & copy inside the card === */
+.form-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 0.75rem 0;
+}
+.form-subtitle {
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #555;
+  margin: 0 0 0.75rem 0;
+}
+.form-description {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.55;
+  margin: 0 0 1.25rem 0;
+}
+
+/* === Submit Button === */
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+.submit-button {
+  background-color: #1976d2 !important;
+  border-color: #1976d2 !important;
+}
+
+/* === Responsive === */
+@media (max-width: 768px) {
+  .hero-logo { max-width: 180px; }
+  .hero-title { font-size: 1.4rem; }
+  .card-body { padding: 1rem 1.25rem 1.5rem; }
+  .bottom-section { padding: 0.75rem 1.25rem; }
+  .bottom-text { font-size: 0.95rem; }
+}
+@media (max-width: 600px) {
+  :host { --field-column-width: 100%; } /* column becomes full-width on small screens */
+}

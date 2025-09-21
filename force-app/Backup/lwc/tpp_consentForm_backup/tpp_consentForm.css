@@ -1,0 +1,11 @@
+.consent-container {
+    background: url('/resource/TPPbackgroundImage') no-repeat center center fixed;
+    background-size: cover;   /* scale to full page */
+    min-height: 100vh;
+}
+
+.consent-card {
+    background-color: #ffffff; /* Keep card white */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 0.25rem;
+}

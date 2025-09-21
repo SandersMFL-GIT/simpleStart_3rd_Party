@@ -1,0 +1,60 @@
+/* Page background + position */
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background-color: #0070d2;
+  padding-top: 3rem;
+}
+
+/* Center a single card */
+.waiting-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+
+/* >>> Match the RESULT card size <<< */
+.waiting-container > div {
+  width: 560px;          /* same as retainer card wrapper */
+  max-width: 92vw;
+  flex: 0 0 auto;
+}
+
+.wait-card {
+  display: block;
+  width: 100%;
+  background: #fff;
+  border-radius: 0.5rem;         /* same radius */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2); /* same shadow */
+  overflow: hidden;
+}
+
+/* Top banner: match result card image height */
+.image-section {
+  height: 280px;                 /* match result card */
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Content */
+.content-section {
+  padding: 2rem;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: #444;
+}

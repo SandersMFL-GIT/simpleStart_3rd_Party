@@ -189,20 +189,3 @@
   white-space: nowrap;
   border: 0;
 }
-/* ===== Footer layout: left + right buttons ===== */
-:host .slds-modal__footer {
-  display: flex;                 /* ensure we can control alignment */
-}
-
-:host .slds-modal__footer .slds-grid {
-  width: 100%;                   /* let the grid span the full footer */
-}
-
-:host .slds-modal__footer .slds-grid_align-spread {
-  justify-content: space-between;/* push first child left, last child right */
-}
-
-/* Optional: keep buttons vertically centered if footer wraps */
-:host .slds-modal__footer .slds-grid > * {
-  align-self: center;
-}

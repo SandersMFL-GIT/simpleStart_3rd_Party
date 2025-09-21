@@ -8,9 +8,9 @@
     <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
             <property
-                name="recordId"
+                name="parentAccountId"
                 type="String"
-                label="Account Id"
+                label="Parent Account Id"
                 
             />
         </targetConfig>

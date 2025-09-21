@@ -1,0 +1,62 @@
+<template>
+    <div class="consent-container slds-grid slds-grid_align-center slds-p-around_medium">
+        <div class="slds-size_1-of-1 slds-medium-size_2-of-3 slds-large-size_1-of-2">
+            <lightning-card class="consent-card">
+                <div class="slds-p-around_medium">
+                    <lightning-button
+                        variant="base"
+                        label={consentToggleLabel}
+                        onclick={toggleConsent}
+                        class="slds-m-bottom_small">
+                    </lightning-button>
+
+                    <!-- Disclosure Text -->
+                    <template if:true={showConsent}>
+                        <div
+                            class="slds-box slds-theme_default slds-scrollable_y slds-m-bottom_medium"
+                            style="max-height: 300px;"
+                            data-id="consent-container"
+                            lwc:dom="manual">
+                            <!-- Required: must be empty! -->
+                        </div>
+                    </template>
+
+                    <!-- Explanation -->
+                    <p class="slds-m-bottom_medium">
+                        By checking both boxes and clicking "I AGREE", you confirm you have read and agree to the Consent to Electronic Disclosures and the Terms of Service.
+                    </p>
+
+                    <!-- Checkboxes -->
+                    <div class="slds-grid slds-wrap slds-m-bottom_medium">
+                        <div class="slds-size_1-of-1 slds-m-bottom_xx-small">
+                            <lightning-input 
+                                type="checkbox" 
+                                label="Consent to Electronic Disclosures" 
+                                onchange={handleConsentChange}
+                                required>
+                            </lightning-input>
+                        </div>
+                        <div class="slds-size_1-of-1">
+                            <lightning-input 
+                                type="checkbox" 
+                                label="Agree to Terms of Service" 
+                                onchange={handleTermsChange}
+                                required>
+                            </lightning-input>
+                        </div>
+                    </div>
+
+                    <!-- Agree Button -->
+                    <div class="slds-text-align_center">
+                        <lightning-button
+                            label="I AGREE"
+                            onclick={handleAgree}
+                            disabled={buttonDisabled}
+                            variant="brand">
+                        </lightning-button>
+                    </div>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template>

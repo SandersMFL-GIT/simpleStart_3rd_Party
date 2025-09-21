@@ -10,41 +10,65 @@
                         class="slds-m-bottom_small">
                     </lightning-button>
 
-                    <!-- Disclosure Text -->
-                    <template if:true={showConsent}>
-                        <div
-                            class="slds-box slds-theme_default slds-scrollable_y slds-m-bottom_medium"
-                            style="max-height: 300px;"
-                            data-id="consent-container"
-                            lwc:dom="manual">
-                            <!-- Required: must be empty! -->
+                    <!-- Error message (inline) -->
+                    <template if:true={errorMsg}>
+                        <div class="slds-notify slds-notify_alert slds-theme_error slds-m-bottom_small"
+                             role="alert" aria-live="assertive">
+                            <span class="slds-assistive-text">Error</span>
+                            <h2 class="slds-text-body_regular slds-wrap">{errorMsg}</h2>
                         </div>
                     </template>
 
-                    <!-- Explanation -->
-                    <p class="slds-m-bottom_medium">
-                        By checking both boxes and clicking "I AGREE", you confirm you have read and agree to the Consent to Electronic Disclosures and the Terms of Service.
-                    </p>
+                    <!-- Disclosure Text (rendered safely, no manual DOM) -->
+                    <template if:true={showConsent}>
+                        <div
+                            id="consent-content"
+                            class="slds-box slds-theme_default slds-scrollable_y slds-m-bottom_medium"
+                            style="max-height:300px;">
+                            <lightning-formatted-rich-text value={templateHtml}></lightning-formatted-rich-text>
+                        </div>
+                    </template>
 
-                    <!-- Checkboxes -->
+                    <!-- Checkboxes (controlled inputs) -->
                     <div class="slds-grid slds-wrap slds-m-bottom_medium">
                         <div class="slds-size_1-of-1 slds-m-bottom_xx-small">
-                            <lightning-input 
-                                type="checkbox" 
-                                label="Consent to Electronic Disclosures" 
-                                onchange={handleConsentChange}
-                                required>
+                            <lightning-input
+                                type="checkbox"
+                                name="consent"
+                                value="consent"
+                                checked={consentChecked}
+                                label="Consent to Electronic Disclosures"
+                                onchange={handleConsentChange}>
                             </lightning-input>
                         </div>
+
+                        <div class="slds-size_1-of-1 slds-m-bottom_xx-small">
+                            <lightning-input
+                                type="checkbox"
+                                name="terms"
+                                value="terms"
+                                checked={termsChecked}
+                                label="I Agree to Terms of Service"
+                                onchange={handleTermsChange}>
+                            </lightning-input>
+                        </div>
+
                         <div class="slds-size_1-of-1">
-                            <lightning-input 
-                                type="checkbox" 
-                                label="Agree to Terms of Service" 
-                                onchange={handleTermsChange}
-                                required>
+                            <lightning-input
+                                type="checkbox"
+                                name="fcra"
+                                value="fcra"
+                                checked={creditConsentChecked}
+                                label="You understand that by clicking the I AGREE box, you are providing 'written instructions' to Modern Family Law under the Fair Credit Reporting Act, authorizing Modern Family Law to obtain information from your personal credit profile or other information from Experian. You authorize Modern Family Law to obtain such information solely to conduct a pre-qualification for credit."
+                                onchange={handleCreditConsentChange}>
                             </lightning-input>
                         </div>
                     </div>
+
+                    <!-- Explanation -->
+                    <p class="slds-m-bottom_medium">
+                        By checking all boxes and clicking "I AGREE", you confirm you have read and agree to the Consent to Electronic Disclosures, the Terms of Service, and you authorize Modern Family Law to obtain your credit profile under the Fair Credit Reporting Act.
+                    </p>
 
                     <!-- Agree Button -->
                     <div class="slds-text-align_center">
