@@ -15,8 +15,8 @@ export default class SsRetainerDecision extends LightningElement {
 
     // Returned from Apex (DecisionResult)
     creditDecision;
-    quotedRetainer;   // standard retainer (full)
-    reducedRetainer;  // discounted retainer (if Apex provided one)
+    quotedRetainer;   // (may be present, but we won't calculate with it)
+    reducedRetainer;  // **this is the only amount we display**
     accountName;
 
     /*** --- Apex wire --- ***/
@@ -29,7 +29,6 @@ export default class SsRetainerDecision extends LightningElement {
             this.accountName     = data.accountName || '';
             this.updateBackgroundImages();
         } else if (error) {
-            // optional: surface to UI/toast
             // eslint-disable-next-line no-console
             console.error('[SsRetainerDecision] getDecisionWithLink error:', error);
         }
@@ -50,7 +49,7 @@ export default class SsRetainerDecision extends LightningElement {
         }
     }
 
-    /*** --- State getters --- ***/
+    /*** --- State getters (unchanged UI logic) --- ***/
     get isQualified() {
         return Object.prototype.hasOwnProperty.call(DISCOUNTS, this.creditDecision);
     }
@@ -61,45 +60,28 @@ export default class SsRetainerDecision extends LightningElement {
         return this.creditDecision === 'Failed- Follow up with PC';
     }
     get showFull() {
-        // show full-retainer view when explicitly "Full Retainer"
-        // OR when not in a qualified discount tier and not frozen
         return (
             this.creditDecision === 'Full Retainer' ||
             (!this.isQualified && !this.showFrozen)
         );
     }
 
-    /*** --- Calculations --- ***/
-    // Standard/full retainer:
-    // 1) If Apex gave us quotedRetainer, prefer it.
-    // 2) Else infer from reducedRetainer + discount (except Gold 0% which would divide by zero).
-    get standardRetainer() {
-        if (this.quotedRetainer != null) return this.quotedRetainer;
-
-        const discount = DISCOUNTS[this.creditDecision];
-        if (typeof discount === 'number') {
-            if (discount === 0) {
-                // Gold 0%: can’t infer standard from reduced (always 0); fall back to 0
-                return 0;
-            }
-            if (this.reducedRetainer != null) {
-                return this.reducedRetainer / discount;
-            }
-        }
-        return 0;
-    }
-
-    // Reduced/discounted retainer for display:
-    // 1) If Gold 0%, always 0
-    // 2) If we have a discount & standard, compute standard*discount
-    // 3) Else fall back to Apex’s reducedRetainer (if present)
+    /*** --- Amount to display (ONLY reduced retainer) --- ***/
     get reducedRetainerDisplay() {
+        // Gold is always $0 by definition
         if (this.creditDecision === 'Gold - 0% Retainer') return 0;
 
-        const discount = DISCOUNTS[this.creditDecision];
-        if (typeof discount === 'number' && this.standardRetainer) {
-            return this.standardRetainer * discount;
-        }
-        return this.reducedRetainer != null ? this.reducedRetainer : 0;
+        // Show exactly what Apex returned as reduced retainer.
+        // If Apex didn’t provide it, fall back to quotedRetainer; otherwise 0.
+        return this.reducedRetainer != null
+            ? this.reducedRetainer
+            : (this.quotedRetainer ?? 0);
+    }
+    get showFrozenAmount() {
+        return this.showFrozen && this.quotedRetainer != null;
+    }
+    get frozenRetainerDisplay() {
+        // fall back to 0 if Apex didn’t send quotedRetainer
+        return this.quotedRetainer ?? 0;
     }
 }

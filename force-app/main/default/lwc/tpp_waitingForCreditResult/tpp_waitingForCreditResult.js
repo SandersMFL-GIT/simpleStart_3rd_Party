@@ -44,7 +44,7 @@ export default class WaitingForCreditResult extends LightningElement {
 
             const creditDecision = data.creditDecision ?? null;
 
-            // Adjust this predicate if you have other “non-final” markers like 'In Progress', 'Queued', etc.
+           
             const isFinalDecision =
                 creditDecision !== null &&
                 creditDecision !== undefined &&
@@ -59,8 +59,8 @@ export default class WaitingForCreditResult extends LightningElement {
             }
         } else if (error) {
             console.error('[WaitingForCreditResult] Apex wire error:', error);
-            // You can choose to stop polling on first error or keep trying.
-            // Here we stop to avoid spamming; comment this next line if you prefer to keep polling.
+            
+            
             this.stopPolling();
         }
     }
@@ -89,7 +89,6 @@ export default class WaitingForCreditResult extends LightningElement {
             if (this.wiredDecisionResult) {
                 console.log('[WaitingForCreditResult] Refreshing Apex data…');
                 refreshApex(this.wiredDecisionResult);
-                // Nudge LDS cache for this record as well
                 getRecordNotifyChange([{ recordId: id }]);
             }
 

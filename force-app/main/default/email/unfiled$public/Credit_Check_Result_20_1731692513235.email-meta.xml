@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Credit Check - Result 20</name>
+    <pageDevName>Credit_Check_Result_20</pageDevName>
+    <relatedEntityType>Account</relatedEntityType>
+    <style>none</style>
+    <subject>Your SimpleStart Result</subject>
+    <textOnly>{{{Account.Name}}},
+
+We are happy to inform you thatyou have qualified for a 20% reduction on your upfront deposit.
+
+This means you&apos;ll need 80% of the initial deposit quoted to have us start work on your legal matter. We won&apos;t touch that money until your case is over. Then every two weeks you&apos;ll pay us for the work your attorney has billed.
+
+If you&apos;re still interested in having us represent you in your family law case, we&apos;d love to. Please contact your new attorney!
+
+Name: {{{Account.Phone_Attorney_First_Name_A__c}}} {{{Account.Phone_Attorney_Last_Name_A__c}}}
+
+Phone: {{{Account.Phone_Attorney_Mobile_A__c}}}
+
+Email: {{{Account.Phone_Attorney_Email_A__c}}}
+
+Attorney Bio &lt; {{{Recipient.Phone_Attorney_Bio_Link__c}}} &gt; 
+
+Someone from our team will also reach out to get things started if we haven&apos;t heard from you. If you have questions or concerns before hiring us, we&apos;re happy to chat more first.
+
+If you have more questions about our SimpleStart™ Program, our finance team is happy to help. This team can be reached via accounting@modernfamilylaw.com 
+
+Sincerely,
+
+Modern Family Law &lt; https://ModernFamilyLaw.com &gt; 
+
+(866) 409-3025
+
+ModernFamilyLaw.com
+
+We are excited to get things started.
+
+This email was sent by: Modern Family Law
+
+4500 S Cherry Creek Dr Suite 700 Denver, CO, 80246, USA</textOnly>
+    <type>custom</type>
+    <uiType>SFX</uiType>
+</EmailTemplate>

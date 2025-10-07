@@ -27,27 +27,27 @@
             </value>
         </inputParameters>
         <inputParameters>
-            <name>composeEmailContent</name>
+            <name>useEmailTemplate</name>
             <value>
                 <stringValue>True</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>emailSubject</name>
+            <name>emailTemplateId</name>
             <value>
-                <stringValue>Please Complete Your Application</stringValue>
+                <stringValue>00XTP0000088pwn2AA</stringValue>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>emailBody</name>
+            <name>recipientId</name>
             <value>
-                <stringValue>&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Hello {!$Record.FirstName},&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;To continue your case, please complete this secure application form:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://modernfamilylaw--simplestar--c.sandbox.vf.force.com/flow/SS_Application_Form?recordId={!$Record.Id}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;[Complete Your Application]&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;Thank you!&lt;/span&gt;&lt;/p&gt;</stringValue>
+                <elementReference>$Record.PersonContactId</elementReference>
             </value>
         </inputParameters>
         <inputParameters>
-            <name>sendRichBody</name>
+            <name>relatedRecordId</name>
             <value>
-                <booleanValue>true</booleanValue>
+                <elementReference>$Record.Id</elementReference>
             </value>
         </inputParameters>
         <nameSegment>emailSimple</nameSegment>
@@ -56,9 +56,44 @@
     </actionCalls>
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>errormessage</name>
+        <label>errormessage</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <customErrorMessages>
+            <errorMessage>{!varErrorMessage}</errorMessage>
+            <isFieldError>false</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Responsible_Atty</name>
+        <label>Responsible Atty</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>errormessage</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Default Outcome</defaultConnectorLabel>
+        <rules>
+            <name>Yes</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Responsible_Attorney__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Email_Action_1</targetReference>
+            </connector>
+            <label>Yes</label>
+        </rules>
+    </decisions>
     <environments>Default</environments>
-    <interviewLabel>SS Aplication Form Trigger {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>SS Aplication Form Trigger</label>
+    <interviewLabel>Simple Start : Third Party Application Email {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Simple Start : Third Party Application Email</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -82,7 +117,7 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Send_Email_Action_1</targetReference>
+            <targetReference>Responsible_Atty</targetReference>
         </connector>
         <doesRequireRecordChangedToMeetCriteria>true</doesRequireRecordChangedToMeetCriteria>
         <filterLogic>and</filterLogic>
@@ -93,19 +128,33 @@
                 <booleanValue>true</booleanValue>
             </value>
         </filters>
+        <filters>
+            <field>Credit_Check_Complete__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <booleanValue>false</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Credit_Applicant__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Third Party</stringValue>
+            </value>
+        </filters>
         <object>Account</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Obsolete</status>
     <variables>
-        <name>recordId</name>
+        <name>varErrorMessage</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
-        <isInput>true</isInput>
-        <isOutput>true</isOutput>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
         <value>
-            <elementReference>$Record.Id</elementReference>
+            <stringValue>Responsible attorney required</stringValue>
         </value>
     </variables>
 </Flow>

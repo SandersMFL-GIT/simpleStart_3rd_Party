@@ -308,4 +308,33 @@ export default class SsThirdPartyApplicationForm extends LightningElement {
         });
         this.dispatchEvent(event);
     }
+
+    /**
+     * @description Checks if all required fields are filled (controls Submit visibility)
+     * Render the Submit button with `if:true={isFormValid}` in the HTML.
+     */
+    get isFormValid() {
+        const requiredFields = [
+            'firstName',
+            'lastName',
+            'birthdate',
+            'socialSecurityNumber',
+            'mobilePhone',
+            'email',
+            'street',
+            'city',
+            'state',
+            'postalCode',
+            'annualIncome'
+        ];
+        return requiredFields.every(field => {
+            const value = this.formData[field];
+            return value !== null && value !== undefined && value.toString().trim() !== '';
+        });
+    }
+
+get isSubmitDisabled() {
+    return !this.isFormValid;
+}
+
 }

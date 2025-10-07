@@ -4,5 +4,6 @@
     "**/bower_components": true,
     "**/.sfdx": true
   },
-  "salesforce.einsteinForDevelopers.enableDebugLogging": true
+  "salesforce.einsteinForDevelopers.enableDebugLogging": true,
+  "xml.preferences.showSchemaDocumentationType": "none"
 }

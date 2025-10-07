@@ -122,9 +122,16 @@
                   <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
                 </template>
                 <template if:false={isLoading}>
-                  <lightning-button variant="brand" type="submit" label="Submit Application"
-                    class="submit-button">
-                  </lightning-button>
+                  <lightning-button 
+    variant="brand" 
+    type="submit" 
+    label="Submit Application"
+    class="submit-button"
+    disabled={isSubmitDisabled}>
+</lightning-button>
+      
+
+
                 </template>
               </div>
             </form>

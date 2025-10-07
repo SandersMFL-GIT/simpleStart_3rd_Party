@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initialscale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <style type="text/css">@media screen and (max-width: 480px) {slot[style] {margin-right: 0 !important;}.columnDiv {margin-right: 0 !important;}}@media screen and (min-width: 480px) {slot[style] {margin-bottom: 0 !important;}.columnDiv {margin-bottom: 0 !important;}}</style>
+  <style type="text/css">@media screen and (max-width: 480px) {.contentbuilderBaseColumnRow .columnCell {display:inline-block;width:100%}}</style>
+  <style type="text/css">.contentpageDefaultEmailTemplatePageTemplate .contentRoot {width: 600px;}@media only screen and (max-width: 480px) {.contentpageDefaultEmailTemplatePageTemplate .contentRoot {width: 320px;}}</style>
+ </head>
+ <body>
+  <table class="contentpageDefaultEmailTemplatePageTemplate" style="background-color: #ebf0f0;" role="presentation" id="contentpage_emailTemplateBodyContent" width="100%" cellpadding="0" cellspacing="0">
+   <tbody>
+    <tr>
+     <td width="100%" align="center">
+      <table class="contentRoot" style="background-color: #ffffff;" role="presentation" width="600" cellpadding="0" cellspacing="0">
+       <tbody>
+        <tr>
+         <td style="padding-top: 10px; padding-bottom: 10px; padding-left: 0px; padding-right: 0px;">
+          <table class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%; background-color:;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+           <tbody>
+            <tr valign="top">
+             <td width="100%" class="columnCell" style="vertical-align: top;display: inline-block; float:left">
+              <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+               <tbody>
+                <tr>
+                 <td>
+                  <table style="width:100%; border-collapse: collapse; word-break:break-word;" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td align="center"><img style="width: 100%; display: block; border: none; max-width: 100%; object-fit: contain;" src="{[devName:EmailHeaders_2]}" alt="" width="600" /></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+               </tbody>
+              </table></td>
+            </tr>
+           </tbody>
+          </table>
+          <table class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%; background-color:#FFFFFF;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+           <tbody>
+            <tr valign="top">
+             <td width="100%" class="columnCell" style="vertical-align: top;display: inline-block; float:left">
+              <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+               <tbody>
+                <tr>
+                 <td>
+                  <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;"><p><span style="color:#4e4d4d;"><span style="font-size:16px;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;">{{{Account.Name}}},</span></span></span><br /><br /><span style="color:#4e4d4d;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">We are happy to inform you that</span></span></span><span style="color:#5e6ab2;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">&nbsp;</span></span></span><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">you have qualified&nbsp;for a 20% reduction </span></span><span style="color:#4e4d4d;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">on your upfront deposit.</span></span></span></p><p><span style="color:#4e4d4d;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">This means you'll need 80% of the initial deposit quoted to have us start work on your legal matter. We won't touch that money until your case is over. Then every two weeks you'll pay us for the work your attorney has billed.</span></span></span></p></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+                <tr>
+                 <td>
+                  <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="color:#666666;"><span style="font-size:16px;">If you're still interested in having us represent you in your family law case, we'd love to. Please contact your new attorney!</span></span><br /><br /><strong><span style="color:#666666;"><span style="font-size:16px;">Name</span></span>:&nbsp;</strong><span style="color:#666666;"><span style="font-size:16px;">{{{Account.Phone_Attorney_First_Name_A__c}}}&nbsp;{{{Account.Phone_Attorney_Last_Name_A__c}}}</span></span><br /><strong><span style="color:#666666;"><span style="font-size:16px;">Phone</span></span> :&nbsp;</strong><span style="font-size:16px;"><span style="color:#666666;">{{{Account.Phone_Attorney_Mobile_A__c}}}</span></span><br /><strong><span style="color:#666666;">Email</span> :&nbsp;</strong></span>{{{Account.Phone_Attorney_Email_A__c}}}</td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+                <tr>
+                 <td>
+                  <table style="border: 0; width: 100%; border-collapse: collapse; mso-table-lspace:0pt;mso-table-rspace:0pt;" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="padding-top: 10px;padding-bottom: 10px;padding-left: 10px;mso-table-lspace:0pt;mso-table-rspace:0pt;">
+                      <div style="word-break:break-word; border: 0; mso-border-alt: 0; text-align:left; ">
+                       <div style="display: inline-block; border: 0; mso-border-alt: 0; ">
+                        <a style="direction:ltr;display:block;text-align:center;margin:0; font-family:Gill Sans, Arial, Helvetica, sans-serif; font-size:16px; padding-top: 10px;padding-right: 20px;padding-bottom: 10px;padding-left: 20px; color:#FFFFFF;font-weight:normal;font-style:normal;text-decoration:none;border:0;background-color:#3ebfdc;border-radius:20px;mso-padding-alt:0;" href="{{{Recipient.Phone_Attorney_Bio_Link__c}}}" target="_blank"><!--[if mso]><i style="background-color:#3ebfdc; letter-spacing: 20px; mso-text-raise: 10px; mso-font-width: -100%;">&nbsp;</i><![endif]--><span>Attorney Bio</span><!--[if mso]><i style="background-color:#3ebfdc; letter-spacing: 20px; mso-text-raise: -10px; mso-font-width: -100%;">&nbsp;</i><![endif]--></a>
+                       </div>
+                      </div></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+                <tr>
+                 <td>
+                  <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;"><span style="color:#4e4d4d;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">Someone from our team will also reach out to get things started if we haven't heard from you. If you have questions or concerns before hiring us, we're happy to chat more first.</span></span></span></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+               </tbody>
+              </table></td>
+            </tr>
+           </tbody>
+          </table>
+          <table class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%; background-color:#FFFFFF;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+           <tbody>
+            <tr valign="top">
+             <td width="100%" class="columnCell" style="vertical-align: top;display: inline-block; float:left">
+              <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+               <tbody>
+                <tr>
+                 <td>
+                  <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;">
+                      <div>
+                       <span style="color:#4e4d4d;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:16px;">If you have more questions about our SimpleStart™ Program, our finance team is happy to help.&nbsp;</span></span></span>This team can be reached via accounting@modernfamilylaw.com
+                      </div>
+                      <div>
+                       <br /><br /><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:14px;"><span style="color:#4e4d4d;">Sincerely,</span><br /><a href="https://ModernFamilyLaw.com"><span style="color:#4e4d4d;">Modern Family Law</span></a><br /><span style="color:#4e4d4d;">(866) 409-3025<br /> ModernFamilyLaw.com</span></span></span>
+                      </div></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+               </tbody>
+              </table></td>
+            </tr>
+           </tbody>
+          </table>
+          <table class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%; background-color:#CDD0D7;background-image: url('{[devName:Background]}');background-size: cover;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+           <tbody>
+            <tr valign="top">
+             <td width="100%" class="columnCell" style="vertical-align: top;display: inline-block; float:left">
+              <div class="columnDiv" style="padding: 25px;">
+               <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+                <tbody>
+                 <tr>
+                  <td>
+                   <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                    <tbody>
+                     <tr>
+                      <td style="font-family: Arial, Helvetica, sans-serif;padding-top: 20px;padding-right: 20px;padding-bottom: 20px;padding-left: 20px;">
+                       <div style="text-align: center;">
+                        <span style="color:#5e6ab2;"><span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="font-size:20px;">We are excited to get things started.</span></span></span>
+                       </div></td>
+                     </tr>
+                    </tbody>
+                   </table></td>
+                 </tr>
+                </tbody>
+               </table>
+              </div></td>
+            </tr>
+           </tbody>
+          </table>
+          <table class="contentbuilderBaseColumnRow" style="align-items: flex-start; width: 100%; background-color:;" role="presentation" width="100%" cellpadding="0" cellspacing="0">
+           <tbody>
+            <tr valign="top">
+             <td width="100%" class="columnCell" style="vertical-align: top;display: inline-block; float:left">
+              <table cellpadding="0" cellspacing="0" style="width: 100%; border-collapse: collapse; word-break:break-word;">
+               <tbody>
+                <tr>
+                 <td>
+                  <table style="width:100%; border-collapse: collapse; word-break:break-word;" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="padding-top: 10px;padding-bottom: 10px;" align="Center"><img style="width: 100%; display: block; border: none; max-width: 75%; object-fit: contain; height: 75px;" src="{[devName:MFL_Logo_Icon]}" alt="" width="450" /></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+                <tr>
+                 <td>
+                  <table style="width: 100%; border-collapse: collapse; word-break: break-word; font-size: 14px" id="contentRegion" role="presentation" cellspacing="0" cellpadding="0" locked="0">
+                   <tbody>
+                    <tr>
+                     <td style="font-family: Arial, Helvetica, sans-serif;">
+                      <div style="text-align: center;">
+                       <span style="font-family:Gill Sans,Arial,Helvetica,sans-serif;"><span style="color:#4e4d4d;"><span style="font-size:12px;">This email was sent by: Modern Family Law<br /> 4500 S Cherry Creek Dr Suite 700 Denver, CO, 80246, USA</span></span></span>
+                      </div></td>
+                    </tr>
+                   </tbody>
+                  </table></td>
+                </tr>
+               </tbody>
+              </table></td>
+            </tr>
+           </tbody>
+          </table></td>
+        </tr>
+       </tbody>
+      </table></td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>

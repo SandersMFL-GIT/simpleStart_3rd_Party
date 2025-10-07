@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Flow xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionCalls>
-        <name>triggerPrequal</name>
-        <label>triggerPrequal</label>
+        <name>Trigger_Third_Party_Credit_Check_Action_1</name>
+        <label>Trigger Third-Party Credit Check Action 1</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <actionName>TriggerCreditCheckFlowAction</actionName>
+        <actionName>TriggerThirdPartyCCFlowAction</actionName>
         <actionType>apex</actionType>
         <connector>
-            <targetReference>get_acc2</targetReference>
+            <targetReference>TPP_Waiting_Screen</targetReference>
         </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>accountId</name>
+            <name>parentAccountId</name>
             <value>
-                <elementReference>recordId</elementReference>
+                <elementReference>parentAccountId</elementReference>
             </value>
         </inputParameters>
-        <nameSegment>TriggerCreditCheckFlowAction</nameSegment>
+        <inputParameters>
+            <name>thirdPartyAccountId</name>
+            <value>
+                <elementReference>tpp_recordId</elementReference>
+            </value>
+        </inputParameters>
+        <nameSegment>TriggerThirdPartyCCFlowAction</nameSegment>
         <offset>0</offset>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <outputParameters>
+            <assignToReference>Message</assignToReference>
+            <name>message</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>Status</assignToReference>
+            <name>status</name>
+        </outputParameters>
     </actionCalls>
     <apiVersion>64.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -30,8 +43,14 @@
         </value>
     </customProperties>
     <environments>Default</environments>
-    <interviewLabel>SS Application Form V3 {!$Flow.CurrentDateTime}</interviewLabel>
-    <label>SS Application Form V3</label>
+    <formulas>
+        <name>recordId18</name>
+        <dataType>String</dataType>
+        <expression>CASESAFEID({!recordId})</expression>
+    </formulas>
+    <interviewLabel>Simple Start : Third Party Credit Check V2 {!$Flow.CurrentDateTime}</interviewLabel>
+    <isAdditionalPermissionRequiredToRun>true</isAdditionalPermissionRequiredToRun>
+    <label>Simple Start : Third Party Credit Check V2</label>
     <processMetadataValues>
         <name>BuilderType</name>
         <value>
@@ -52,34 +71,13 @@
     </processMetadataValues>
     <processType>Flow</processType>
     <recordLookups>
-        <name>Get_acc</name>
-        <label>Get acc</label>
+        <name>get_acc</name>
+        <label>get acc</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
         <connector>
-            <targetReference>Form</targetReference>
-        </connector>
-        <filterLogic>and</filterLogic>
-        <filters>
-            <field>Id</field>
-            <operator>EqualTo</operator>
-            <value>
-                <elementReference>recordId</elementReference>
-            </value>
-        </filters>
-        <getFirstRecordOnly>true</getFirstRecordOnly>
-        <object>Account</object>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
-    </recordLookups>
-    <recordLookups>
-        <name>get_acc2</name>
-        <label>get acc2</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
-        <connector>
-            <targetReference>waiting1</targetReference>
+            <targetReference>TPP_Application_Form</targetReference>
         </connector>
         <filterLogic>and</filterLogic>
         <filters>
@@ -93,76 +91,75 @@
         <object>Account</object>
         <queriedFields>Id</queriedFields>
         <queriedFields>Credit_Decision__c</queriedFields>
-        <queriedFields>Quoted_Retainer__c</queriedFields>
-        <queriedFields>Quoted_Retainer_Amount__c</queriedFields>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordLookups>
+    <runInMode>DefaultMode</runInMode>
     <screens>
-        <name>Adobe_Sign</name>
-        <label>Adobe Sign</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <fields>
-            <name>Adobe1</name>
-            <extensionName>c:adobeSignWebForm</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputParameters>
-                <name>webFormUrl</name>
-                <value>
-                    <stringValue>https://na3.documents.adobe.com/public/esignWidget?wid=CBFCIBAA3AAABLblqZhD05PJHelnK18MEP2nU3jNoZ--PzQYgj0MB1tPZJu2TT-jgyB7BnMqI2ImgD_1jGSU*</stringValue>
-                </value>
-            </inputParameters>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>consent1</name>
-        <label>consent1</label>
+        <name>TPP_Application_Form</name>
+        <label>TPP Application Form</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>triggerPrequal</targetReference>
+            <targetReference>TPP_Consent_Form</targetReference>
+        </connector>
+        <fields>
+            <name>tppForm</name>
+            <extensionName>c:tpp_ThirdPartyApplicationForm</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>recordTypeId</name>
+                <value>
+                    <elementReference>varRecordTypeId</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>thirdPartyId</name>
+                <value>
+                    <elementReference>tpp_recordId</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>tpp_recordId</assignToReference>
+                <name>thirdPartyId</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>parentAccountId</assignToReference>
+                <name>parentAccountId</name>
+            </outputParameters>
+        </fields>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>TPP_Consent_Form</name>
+        <label>TPP Consent Form</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Trigger_Third_Party_Credit_Check_Action_1</targetReference>
         </connector>
         <fields>
             <name>consent</name>
-            <extensionName>c:consentForm</extensionName>
-            <fieldType>ComponentInstance</fieldType>
-            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
-            <isRequired>true</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
-        </fields>
-        <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
-    </screens>
-    <screens>
-        <name>Form</name>
-        <label>Form</label>
-        <locationX>0</locationX>
-        <locationY>0</locationY>
-        <allowBack>true</allowBack>
-        <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
-        <connector>
-            <targetReference>consent1</targetReference>
-        </connector>
-        <fields>
-            <name>PcForm</name>
-            <extensionName>c:ssClientApplicationForm</extensionName>
+            <extensionName>c:tpp_consentForm</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>recordId</name>
+                <name>thirdPartyAccountId</name>
                 <value>
-                    <elementReference>recordId</elementReference>
+                    <elementReference>tpp_recordId</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>parentAccountId</name>
+                <value>
+                    <elementReference>parentAccountId</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -170,56 +167,52 @@
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <showFooter>false</showFooter>
-        <showHeader>true</showHeader>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>result</name>
-        <label>result</label>
+        <name>TPP_Credit_Result</name>
+        <label>TPP Credit Result</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>false</allowPause>
-        <connector>
-            <targetReference>Adobe_Sign</targetReference>
-        </connector>
+        <allowPause>true</allowPause>
         <fields>
-            <name>result1</name>
-            <extensionName>c:ssRetainerDecision</extensionName>
+            <name>decision</name>
+            <extensionName>c:tpp_RetainerDecision</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>recordId</name>
+                <name>parentAccountId</name>
                 <value>
-                    <elementReference>recordId</elementReference>
+                    <elementReference>parentAccountId</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
             <isRequired>true</isRequired>
             <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
-        <nextOrFinishButtonLabel>Next</nextOrFinishButtonLabel>
-        <showFooter>true</showFooter>
-        <showHeader>true</showHeader>
+        <showFooter>false</showFooter>
+        <showHeader>false</showHeader>
     </screens>
     <screens>
-        <name>waiting1</name>
-        <label>waiting1</label>
+        <name>TPP_Waiting_Screen</name>
+        <label>TPP Waiting Screen</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>true</allowPause>
         <connector>
-            <targetReference>result</targetReference>
+            <targetReference>TPP_Credit_Result</targetReference>
         </connector>
         <fields>
-            <name>waiting2</name>
-            <extensionName>c:waitingForCreditResult</extensionName>
+            <name>waitingScreen</name>
+            <extensionName>c:tpp_waitingForCreditResult</extensionName>
             <fieldType>ComponentInstance</fieldType>
             <inputParameters>
-                <name>recordId</name>
+                <name>parentAccountId</name>
                 <value>
-                    <elementReference>recordId</elementReference>
+                    <elementReference>parentAccountId</elementReference>
                 </value>
             </inputParameters>
             <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -233,10 +226,27 @@
         <locationX>0</locationX>
         <locationY>0</locationY>
         <connector>
-            <targetReference>Get_acc</targetReference>
+            <targetReference>get_acc</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Obsolete</status>
+    <variables>
+        <name>Message</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>parentAccountId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <elementReference>get_acc.Id</elementReference>
+        </value>
+    </variables>
     <variables>
         <name>recordId</name>
         <dataType>String</dataType>
@@ -245,10 +255,27 @@
         <isOutput>true</isOutput>
     </variables>
     <variables>
-        <name>varAgreementRecordId</name>
+        <name>Status</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>tpp_recordId</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
         <isInput>true</isInput>
         <isOutput>true</isOutput>
+    </variables>
+    <variables>
+        <name>varRecordTypeId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>true</isOutput>
+        <value>
+            <stringValue>0124N000000oTSNQA2</stringValue>
+        </value>
     </variables>
 </Flow>
