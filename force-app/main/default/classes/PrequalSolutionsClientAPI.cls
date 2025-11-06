@@ -53,11 +53,12 @@ public without sharing class PrequalSolutionsClientAPI {
             
             Prequal_Integration_Config__mdt cfg = getConfig();
 
-            String scenario = cfg.Scenario__c;
+             String scenario = cfg.Scenario__c;
             
             System.debug(LoggingLevel.INFO, 'Prequal scenario in use: ' + scenario);
             System.debug(LoggingLevel.INFO, 'Using Named Credential: ' + cfg.Named_Credential__c);
 
+           
             List<Account> accounts = [
                 SELECT Id, FirstName, MiddleName, LastName, PersonMailingStreet, PersonMailingCity, State_A__c,
                        PersonMailingPostalCode, Birthdate__c, Phone, PersonEmail, Quoted_Retainer__c,
@@ -71,6 +72,7 @@ public without sharing class PrequalSolutionsClientAPI {
             for (Account acc : accounts) {
                 try {
                     // Build JSON Payload
+                    //tempstate=getStateCode(acc.State_A__c);
                     Map<String, Object> applicant = new Map<String, Object>{
                         'firstname' => acc.FirstName,
                         'middlename' => acc.MiddleName,
@@ -78,9 +80,11 @@ public without sharing class PrequalSolutionsClientAPI {
                         'address_1' => acc.PersonMailingStreet,
                         'address_2' => '',
                         'city' => acc.PersonMailingCity,
+                        //'state' => acc.State_A__c,
                         'state' => getStateCode(acc.State_A__c),
+                        //'state'=> tempstate,
                         'zip' => acc.PersonMailingPostalCode,
-                        'ssn' => acc.Social_Security_Number__c,
+                       'ssn' => acc.Social_Security_Number__c,
                         'phone' => acc.Phone,
                         'email' => acc.PersonEmail,
                         'income' => acc.Annual_household_income__c != null ? String.valueOf(acc.Annual_household_income__c) : null
@@ -92,7 +96,7 @@ public without sharing class PrequalSolutionsClientAPI {
                     };
 
                     HttpRequest req = new HttpRequest();
-                    req.setEndpoint('callout:' + cfg.Named_Credential__c);
+                   req.setEndpoint('callout:' + cfg.Named_Credential__c);
                     req.setMethod('POST');
                     req.setHeader('Content-Type', 'application/json');
                     req.setBody(JSON.serialize(requestPayload));
@@ -141,29 +145,18 @@ public without sharing class PrequalSolutionsClientAPI {
 
                             // 3. Frozen check
                             Boolean creditFrozen = false;
-                            if (report.details != null && report.details.normalized != null) {
-                                if (report.details.normalized.CREDIT_FROZEN_STATUS != null) {
-                                    CreditFrozenStatus frozen = report.details.normalized.CREDIT_FROZEN_STATUS;
-                                    if ((frozen.EquifaxIndicator != null && frozen.EquifaxIndicator == 'true') ||
-                                        (frozen.ExperianIndicator != null && frozen.ExperianIndicator == 'true') ||
-                                        (frozen.TransUnionIndicator != null && frozen.TransUnionIndicator == 'true')) {
-                                        creditFrozen = true;
-                                    }
-                                }
-                                if (!creditFrozen && report.details.normalized.CREDIT_FILE != null &&
-                                    report.details.normalized.CREDIT_FILE.ResultStatusType != null &&
-                                    report.details.normalized.CREDIT_FILE.ResultStatusType.equalsIgnoreCase('NoFileReturnedCreditFreeze')) {
+                            if (report.details != null && report.details.normalized != null
+                                && report.details.normalized.CREDIT_FROZEN_STATUS != null) {
+                                CreditFrozenStatus frozen = report.details.normalized.CREDIT_FROZEN_STATUS;
+                                if ((frozen.EquifaxIndicator != null && frozen.EquifaxIndicator == 'true') ||
+                                    (frozen.ExperianIndicator != null && frozen.ExperianIndicator == 'true') ||
+                                    (frozen.TransUnionIndicator != null && frozen.TransUnionIndicator == 'true')) {
                                     creditFrozen = true;
                                 }
                             }
 
-                            // 4. Set results
-                            if (creditFrozen) {
-                                accUpdate.Credit_Decision__c = 'Credit Frozen';
-                                accUpdate.Credit_Failure_Type__c = 'freeze';
-                                accUpdate.Credit_Check_Complete__c = false;
-                                accUpdate.Quoted_Retainer_Amount__c = acc.Quoted_Retainer__c;
-                            } else if (chosenOffer != null) {
+                            // 4. Set results based on logic
+                            if (chosenOffer != null) {
                                 accUpdate.Credit_Decision__c = chosenOffer;
                                 accUpdate.Credit_Check_Complete__c = true;
                                 accUpdate.Credit_Failure_Type__c = null;
@@ -174,6 +167,11 @@ public without sharing class PrequalSolutionsClientAPI {
                                 if (acc.Quoted_Retainer__c != null) {
                                     accUpdate.Quoted_Retainer_Amount__c = acc.Quoted_Retainer__c * multiplier;
                                 }
+                            } else if (creditFrozen) {
+                                accUpdate.Credit_Decision__c = 'Credit Frozen';
+                                accUpdate.Credit_Failure_Type__c = 'freeze';
+                                accUpdate.Credit_Check_Complete__c = false;
+                                accUpdate.Quoted_Retainer_Amount__c = acc.Quoted_Retainer__c;
                             } else {
                                 // All failed or unknown status
                                 accUpdate.Credit_Decision__c = 'Full Retainer';
@@ -211,23 +209,12 @@ public without sharing class PrequalSolutionsClientAPI {
     public class ApiRequest { public String product; public String server; public String endpoint; public String api_datetime; public String user; public String ip; }
     public class ApiResponse { public Integer code; public ResponseData data; }
     public class ResponseData { public Applicant applicant; public Reports reports; }
-    public class Applicant {
-        public String id; public String created_at; public String firstname; public String middlename; public String lastname;
-        public String phone; public String email; public String tracking_id; public String address_1; public String address_2;
-        public String city; public String state; public String zip; public String dob; public String ssn; public String income; public String custom;
-    }
+    public class Applicant { public String id; public String created_at; public String firstname; public String middlename; public String lastname; public String phone; public String email; public String tracking_id; public String address_1; public String address_2; public String city; public String state; public String zip; public String dob; public String ssn; public String income; public String custom; }
     public class Reports { public List<Object> merged; public List<IndividualReport> individual; }
-    public class IndividualReport {
-        public String id; public String created_at; public String bureau; public String processing;
-        public String result_status_type; public String temporary_shareable_link;
-        public List<Decisioning> decisioning; public Details details;
-    }
+    public class IndividualReport { public String id; public String created_at; public String bureau; public String processing; public String result_status_type; public String temporary_shareable_link; public List<Decisioning> decisioning; public Details details; }
     public class Decisioning { public String criteria_id; public String criteria_set_name; public String result; public List<Offer> offers; }
     public class Offer { public Integer id; public String name; public String tracking_id; public String url; }
     public class Details { public Normalized normalized; }
-
-    public class Normalized { public CreditFrozenStatus CREDIT_FROZEN_STATUS; public CreditFile CREDIT_FILE; }
+    public class Normalized { public CreditFrozenStatus CREDIT_FROZEN_STATUS; }
     public class CreditFrozenStatus { public String EquifaxIndicator; public String ExperianIndicator; public String TransUnionIndicator; }
-
-    public class CreditFile { public String CreditRepositorySourceType; public String InfileDate; public String ResultStatusType; }
 }

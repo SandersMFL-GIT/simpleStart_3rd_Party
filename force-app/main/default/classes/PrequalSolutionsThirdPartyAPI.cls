@@ -1,27 +1,20 @@
-/**
- * @description API integration class for processing third-party credit checks through PrequalSolutions
- * @author Simple Start Development Team
- * @version 1.0
- */
 public without sharing class PrequalSolutionsThirdPartyAPI {
-    
-     // Static map to hold state name to code conversions
-        private static final Map<String, String> STATE_CODES = new Map<String, String>{
-            'alabama' => 'AL', 'alaska' => 'AK', 'arizona' => 'AZ', 'arkansas' => 'AR', 
-            'california' => 'CA', 'colorado' => 'CO', 'connecticut' => 'CT', 'delaware' => 'DE', 
-            'florida' => 'FL', 'georgia' => 'GA', 'hawaii' => 'HI', 'idaho' => 'ID', 
-            'illinois' => 'IL', 'indiana' => 'IN', 'iowa' => 'IA', 'kansas' => 'KS', 
-            'kentucky' => 'KY', 'louisiana' => 'LA', 'maine' => 'ME', 'maryland' => 'MD', 
-            'massachusetts' => 'MA', 'michigan' => 'MI', 'minnesota' => 'MN', 'mississippi' => 'MS', 
-            'missouri' => 'MO', 'montana' => 'MT', 'nebraska' => 'NE', 'nevada' => 'NV', 
-            'new hampshire' => 'NH', 'new jersey' => 'NJ', 'new mexico' => 'NM', 'new york' => 'NY', 
-            'north carolina' => 'NC', 'north dakota' => 'ND', 'ohio' => 'OH', 'oklahoma' => 'OK', 
-            'oregon' => 'OR', 'pennsylvania' => 'PA', 'rhode island' => 'RI', 'south carolina' => 'SC', 
-            'south dakota' => 'SD', 'tennessee' => 'TN', 'texas' => 'TX', 'utah' => 'UT', 
-            'vermont' => 'VT', 'virginia' => 'VA', 'washington' => 'WA', 'west virginia' => 'WV', 
-            'wisconsin' => 'WI', 'wyoming' => 'WY'
-        };
-
+    // Static map to hold state name to code conversions
+    private static final Map<String, String> STATE_CODES = new Map<String, String>{
+        'alabama' => 'AL', 'alaska' => 'AK', 'arizona' => 'AZ', 'arkansas' => 'AR',
+        'california' => 'CA', 'colorado' => 'CO', 'connecticut' => 'CT', 'delaware' => 'DE',
+        'florida' => 'FL', 'georgia' => 'GA', 'hawaii' => 'HI', 'idaho' => 'ID',
+        'illinois' => 'IL', 'indiana' => 'IN', 'iowa' => 'IA', 'kansas' => 'KS',
+        'kentucky' => 'KY', 'louisiana' => 'LA', 'maine' => 'ME', 'maryland' => 'MD',
+        'massachusetts' => 'MA', 'michigan' => 'MI', 'minnesota' => 'MN', 'mississippi' => 'MS',
+        'missouri' => 'MO', 'montana' => 'MT', 'nebraska' => 'NE', 'nevada' => 'NV',
+        'new hampshire' => 'NH', 'new jersey' => 'NJ', 'new mexico' => 'NM', 'new york' => 'NY',
+        'north carolina' => 'NC', 'north dakota' => 'ND', 'ohio' => 'OH', 'oklahoma' => 'OK',
+        'oregon' => 'OR', 'pennsylvania' => 'PA', 'rhode island' => 'RI', 'south carolina' => 'SC',
+        'south dakota' => 'SD', 'tennessee' => 'TN', 'texas' => 'TX', 'utah' => 'UT',
+        'vermont' => 'VT', 'virginia' => 'VA', 'washington' => 'WA', 'west virginia' => 'WV',
+        'wisconsin' => 'WI', 'wyoming' => 'WY'
+    };
 
     /*** TEST-ONLY OVERRIDES  ***/
     @TestVisible private static String tvNamedCredential; 
@@ -248,52 +241,38 @@ public without sharing class PrequalSolutionsThirdPartyAPI {
         }
 
         private Boolean isCreditFrozen(IndividualReport report) {
-            if (report == null || report.details == null || report.details.normalized == null) {
-                return false;
-            }
+            if (report.details != null && 
+                report.details.normalized != null &&
+                report.details.normalized.CREDIT_FROZEN_STATUS != null) {
 
-            // 1) Bureau indicators
-            CreditFrozenStatus frozen = report.details.normalized.CREDIT_FROZEN_STATUS;
-            if (frozen != null) {
-                if ((frozen.EquifaxIndicator == 'true') ||
-                    (frozen.ExperianIndicator == 'true') ||
-                    (frozen.TransUnionIndicator == 'true')) {
-                    return true;
-                }
+                CreditFrozenStatus frozen = report.details.normalized.CREDIT_FROZEN_STATUS;
+                return (frozen.EquifaxIndicator == 'true') ||
+                       (frozen.ExperianIndicator == 'true') ||
+                       (frozen.TransUnionIndicator == 'true');
             }
-
-            // 2) ResultStatusType = NoFileReturnedCreditFreeze
-            if (report.details.normalized.CREDIT_FILE != null &&
-                report.details.normalized.CREDIT_FILE.ResultStatusType != null &&
-                report.details.normalized.CREDIT_FILE.ResultStatusType.toLowerCase() == 'nofilereturnedcreditfreeze'.toLowerCase()) {
-                return true;
-            }
-
             return false;
         }
 
-       private void setCreditDecisionFields(Account accUpdate, CreditDecisionData decisionData) {
-    Decimal multiplier = getRetainerMultiplier(decisionData.chosenOffer);
+        private void setCreditDecisionFields(Account accUpdate, CreditDecisionData decisionData) {
+            Decimal multiplier = getRetainerMultiplier(decisionData.chosenOffer);
 
-    // Check CREDIT FREEZE 
-    if (decisionData.creditFrozen) {
-        accUpdate.Credit_Decision__c       = 'Credit Frozen';
-        accUpdate.Credit_Check_Complete__c = false;
-        accUpdate.Credit_Failure_Type__c   = 'freeze';
-        accUpdate.Quoted_Retainer_Amount__c = decisionData.quotedRetainer;
-    } else if (decisionData.chosenOffer != null) {
-        accUpdate.Credit_Decision__c       = decisionData.chosenOffer;
-        accUpdate.Credit_Check_Complete__c = true;
-        accUpdate.Credit_Failure_Type__c   = null;
-        accUpdate.Quoted_Retainer_Amount__c = 
-            decisionData.quotedRetainer != null ? decisionData.quotedRetainer * multiplier : null;
-    } else {
-        accUpdate.Credit_Decision__c       = 'Full Retainer';
-        accUpdate.Credit_Check_Complete__c = true;
-        accUpdate.Credit_Failure_Type__c   = null;
-        accUpdate.Quoted_Retainer_Amount__c = decisionData.quotedRetainer;
-    }
-}
+            if (decisionData.chosenOffer != null) {
+                accUpdate.Credit_Decision__c = decisionData.chosenOffer;
+                accUpdate.Credit_Check_Complete__c = true;
+                accUpdate.Credit_Failure_Type__c = null;
+                accUpdate.Quoted_Retainer_Amount__c = decisionData.quotedRetainer != null ? decisionData.quotedRetainer * multiplier : null;
+            } else if (decisionData.creditFrozen) {
+                accUpdate.Credit_Decision__c = 'Credit Frozen';
+                accUpdate.Credit_Check_Complete__c = false;
+                accUpdate.Credit_Failure_Type__c = 'freeze';
+                accUpdate.Quoted_Retainer_Amount__c = decisionData.quotedRetainer;
+            } else {
+                accUpdate.Credit_Decision__c = 'Full Retainer';
+                accUpdate.Credit_Check_Complete__c = true;
+                accUpdate.Credit_Failure_Type__c = null;
+                accUpdate.Quoted_Retainer_Amount__c = decisionData.quotedRetainer;
+            }
+        }
 
         private Decimal getRetainerMultiplier(String chosenOffer) {
             if (chosenOffer == 'Gold - 0% Retainer') {
@@ -319,7 +298,7 @@ public without sharing class PrequalSolutionsThirdPartyAPI {
         public Decimal quotedRetainer;
     }
 
-    
+    // Include all response wrapper classes here (unchanged)
     public class ApiResponseWrapper { public ApiSection api; }
     public class ApiSection { public String reference_id; public ApiRequest request; public ApiResponse response; }
     public class ApiRequest { public String product; public String server; public String endpoint; public String api_datetime; public String user; public String ip; }
@@ -331,12 +310,6 @@ public without sharing class PrequalSolutionsThirdPartyAPI {
     public class Decisioning { public String criteria_id; public String criteria_set_name; public String result; public List<Offer> offers; }
     public class Offer { public Integer id; public String name; public String tracking_id; public String url; }
     public class Details { public Normalized normalized; }
-    public class Normalized { public CreditFrozenStatus CREDIT_FROZEN_STATUS; public CreditFile CREDIT_FILE; }
+    public class Normalized { public CreditFrozenStatus CREDIT_FROZEN_STATUS; }
     public class CreditFrozenStatus { public String EquifaxIndicator; public String ExperianIndicator; public String TransUnionIndicator; }
-
-    public class CreditFile {
-        public String CreditRepositorySourceType;
-        public String InfileDate;
-        public String ResultStatusType;
-    }
 }
